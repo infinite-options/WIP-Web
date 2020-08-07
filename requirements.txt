@@ -1,0 +1,6 @@
+flask
+flask-restful
+flask_cors
+pymysql
+zappa
+awscli
