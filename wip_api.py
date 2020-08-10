@@ -137,6 +137,7 @@ def execute(sql, cmd, conn, skipSerialization=False):
     response = {}
     try:
         with conn.cursor() as cur:
+            print(sql)
             cur.execute(sql)
             if cmd is 'get':
                 result = cur.fetchall()
@@ -303,8 +304,7 @@ class Ticket_Info(Resource):
                 t3.customer_id AS customerID,
                 t3.name AS customerName,
                 t3.phone AS cusomerPhoneNumber,
-                t3.email AS customerEmailAddress,
-                t3.eta AS estimatedTimeArrival
+                t3.email AS customerEmailAddress
                 FROM ticket t1 LEFT JOIN venue t2 ON t2.venue_id = t1.venue_id LEFT JOIN customer t3 ON t3.customer_id = t1.user_id
                 """, 'get', conn)
             # print(result)
@@ -336,9 +336,15 @@ class Get_venue(Resource):
     def get(self, id):
         try:
             conn = connect()
-            result = execute("""
-                select * from venue where venue_id={}
-             """.format(id), 'get', conn)
+            # result = execute("""
+            #     select * from venue where venue_id={}
+            #  """.format(id), 'get', conn)
+            result = execute("""SELECT ticket.venue_uid, ticket.entry_time, ticket.exit_time, venue.venue_id, venue.street, venue.city, venue.state, venue.zip, venue.lattitude, venue.longitude,
+            SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time, count(ticket.venue_uid) as queue_size
+            FROM ticket 
+            inner JOIN venue 
+            ON ticket.venue_uid=venue.venue_uid and venue_id = {} 
+            GROUP BY venue.venue_uid """.format(id), 'get', conn)
             response = {}
             response["result"] = result["result"]
             return response, 200
@@ -368,7 +374,7 @@ class Get_category_venue(Resource):
         try:
             conn = connect()
             result = execute("""
-                select distinct venue_name, venue_id, uid from venue where category= {}
+                select distinct venue_name, venue_id from venue where category= {}
              """.format(name), 'get', conn)
             response = {}
             response["result"] = result["result"]
@@ -417,7 +423,7 @@ class Get_user(Resource):
 """Gets the size  and average waititnf time of the queue for a particular venue
 Returns
 -------
-Json response
+Json response with the updated average wait time , number of people standing in the queue of a particular venue and the status code
 """
 
 
@@ -427,11 +433,11 @@ class Queue_info(Resource):
             conn = connect()
 
             queue_len = execute("""
-                select count(uid) as queue_len from ticket where uid={};
+                select count(venue_uid) as queue_len from ticket where venue_uid={};
                 """.format(id), 'get', conn)
 
             wait_time = execute(
-                """ select SEC_TO_TIME(AVG(TIME_TO_SEC(time_spent))) as wait_time from ticket where uid={} """.format(id), 'get', conn)
+                """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(id), 'get', conn)
             # print(result)
             response = {}
             queue_len["result"].append(wait_time["result"][0])
@@ -448,7 +454,7 @@ class Queue_info(Resource):
 """Update the exit_time of a particular customer for a particular venue
 Returns
 -------
-Json response
+Json response with the updated average time of a particular venue and the status code
 """
 
 
@@ -458,15 +464,17 @@ class Update_queue_info(Resource):
         try:
             _json = request.json
             _user_id = _json['user_id']
-            _uid = _json['uid']
-            _exit_time = ['exit_time']
+            _uid = _json['venue_uid']
+            _exit_time = _json['exit_time']
+            query = """ update ticket set exit_time = '{}' where venue_uid = {} and user_id = {} """.format(
+                _exit_time, _uid, _user_id)
             conn = connect()
-
-            query = execute(
-                """ update ticket set exit_time = {} where uid = {} and user_id = {} """.format(_exit_time, _uid, _user_id), 'post', conn)
-            # print(result)
+            result = execute(query, 'post', conn)
+            print(result)
+            wait_time = execute(
+                """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(_uid), 'get', conn)
             response = {}
-            response["result"] = query["result"]
+            response["result"] = wait_time["result"]
             # print(queue_len)
             return response, 200
         except:
@@ -500,16 +508,16 @@ class Add_venue(Resource):
             _closing_time = _json['v_closing_time']
             _street = _json['a_street']
             _city = _json['a_city']
+            _email = _json['v_email']
             _state = _json['a_state']
             _zip = _json['a_zip']
-            _country = _json['a_country']
             _phone = _json['a_phone']
             _lattitude = _json['a_lattitude']
             _longitude = _json['a_longitude']
             if request.method == 'POST':
                 # sqlQuery = "INSERT INTO Venue(name, category, max_cap, current_cap, address, lattitude, longitude, queue_head, opening_time, closing_time) VALUES(%s, %s, %s, %s,%s, %s, %s, %s, %s, %s)"
                 bindData = (_name, _id, _category, _max_cap, _current_cap, _queue_head, _opening_time,
-                            _closing_time, _street, _city, _state, _zip, _country, _phone, _lattitude, _longitude)
+                            _closing_time, _email, _street, _city, _state, _zip, _phone, _lattitude, _longitude)
                 conn = connect()
                 # print("****** here *******")
                 cursor = conn.cursor()
@@ -547,12 +555,10 @@ class Add_customer(Resource):
             _email = _json['email']
             _phone = _json['phone']
             _address = _json['address']
-            _eta = _json['eta']
-            _transport = _json['transport']
 
             sqlQuery = """
-                         INSERT INTO customer (name, email, phone, address, eta, transport)
-                         VALUES('{}', '{}', '{}', '{}', '{}', '{}')""".format(_name, _email, _phone, _address, _eta, _transport)
+                         INSERT INTO customer (name, email, phone, address)
+                         VALUES('{}', '{}', '{}', '{}')""".format(_name, _email, _phone, _address)
             conn = connect()
             result = execute(sqlQuery, 'post', conn)
             if result['code'] == 281:
@@ -587,7 +593,7 @@ class Add_ticket(Resource):
             _json = request.json
             _user_id = _json['t_user_id']
             _uid = _json['t_uid']
-            _entry_time = _json['t_entry_time']
+            _entry_time = _json["t_entry_time"]
             # _exit_time = _json['exit_time']
             _token_number = _json['t_token_number']
             # _created_at = _json['created_at']
@@ -597,7 +603,7 @@ class Add_ticket(Resource):
             # print(venue_avg_time)
             if request.method == 'POST':
                 bindData = (_user_id, _uid, _token_number,
-                            "00:00:00", _entry_time, "00:00:00", "00:00:00")
+                            "00:00:00", _entry_time, "00:00:00")
                 conn = connect()
                 # print("****** here *******")
                 cursor = conn.cursor()
