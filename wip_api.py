@@ -339,14 +339,33 @@ class Get_venue(Resource):
             # result = execute("""
             #     select * from venue where venue_id={}
             #  """.format(id), 'get', conn)
-            result = execute("""SELECT ticket.venue_uid, ticket.entry_time, ticket.exit_time, venue.venue_id, venue.street, venue.city, venue.state, venue.zip, venue.lattitude, venue.longitude,
+            result = execute("""SELECT venue.venue_uid, ticket.entry_time, ticket.exit_time, venue.venue_id, venue.street, venue.city, venue.state, venue.zip, venue.lattitude, venue.longitude,
             SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time, count(ticket.venue_uid) as queue_size
             FROM ticket 
-            inner JOIN venue 
-            ON ticket.venue_uid=venue.venue_uid and venue_id = {} 
-            GROUP BY venue.venue_uid """.format(id), 'get', conn)
+            right JOIN venue 
+            ON ticket.venue_uid=venue.venue_uid and venue.venue_id = {} where venue.venue_id = {}
+            GROUP BY venue.venue_uid """.format(id, id), 'get', conn)
+
+            print(result)
+
+            # number_of_venues = execute(
+            #     """ select count(venue_id) as venue_count from venue where venue_id = {} """.format(id), 'get', conn)
+
+            # print(number_of_venues["result"][0]['venue_count'])
             response = {}
-            response["result"] = result["result"]
+            data = {}
+            if len(result["result"]) == 0:
+                data = execute(
+                    """SELECT venue_uid, street, city, state, zip, lattitude, longitude from venue where venue_id = {}""".format(id), 'get', conn)
+                for idx, item in enumerate(data["result"]):
+                    print(idx, item)
+                    item["wait_time"] = 0
+                    item["queue_len"] = 0
+
+                response["result"] = data["result"]
+            else:
+                response["result"] = result["result"]
+
             return response, 200
         except:
             raise BadRequest(
@@ -451,7 +470,7 @@ class Queue_info(Resource):
             disconnect(conn)
 
 
-"""Update the exit_time of a particular customer for a particular venue
+"""Update the exit_time of a particular customer for a particular venue  (when a user scans the barcode to exit the venue)
 Returns
 -------
 Json response with the updated average time of a particular venue and the status code
@@ -466,11 +485,61 @@ class Update_queue_info(Resource):
             _user_id = _json['user_id']
             _uid = _json['venue_uid']
             _exit_time = _json['exit_time']
-            query = """ update ticket set exit_time = '{}' where venue_uid = {} and user_id = {} """.format(
-                _exit_time, _uid, _user_id)
             conn = connect()
+            query = """ update ticket set exit_time = '{}' where venue_uid = {} and user_id = {}
+             """.format(
+                _exit_time, _uid, _user_id)
+
+            print(query)
+            print("here1")
+
             result = execute(query, 'post', conn)
+            execute(""" update ticket set status = 'processed' where venue_uid = {} and user_id = {} """.format(
+                _uid, _user_id), 'post', conn)
             print(result)
+            print("here2")
+
+            wait_time = execute(
+                """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(_uid), 'get', conn)
+            response = {}
+            response["result"] = wait_time["result"]
+            # print(queue_len)
+            return response, 200
+        except:
+            raise BadRequest(
+                'Queue_update_info Request failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+
+"""Update the entry_time of a particular customer for a particular venue (when a user scans the barcode to enter the venue)
+Returns
+-------
+Json response with the updated average time of a particular venue and the status code
+"""
+
+
+class Update_entry_time(Resource):
+    def put(self):
+        response = {}
+        try:
+            _json = request.json
+            _user_id = _json['user_id']
+            _uid = _json['venue_uid']
+            _exit_time = _json['entry_time']
+
+            conn = connect()
+            query = """ update ticket set entry_time = '{}' where venue_uid = {} and user_id = {}
+             """.format(
+                _exit_time, _uid, _user_id)
+
+            print(query)
+
+            result = execute(query, 'post', conn)
+            execute(""" update ticket set status = 'In-store' where venue_uid = {} and user_id = {} """.format(
+                _uid, _user_id), 'post', conn)
+            print(result)
+
             wait_time = execute(
                 """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(_uid), 'get', conn)
             response = {}
@@ -504,8 +573,7 @@ class Add_venue(Resource):
             _max_cap = _json['v_max_cap']
             _current_cap = _json['v_current_cap']
             _queue_head = _json['v_queue_head']
-            _opening_time = _json['v_opening_time']
-            _closing_time = _json['v_closing_time']
+            _business_hours = _json["v_business_hours"]
             _street = _json['a_street']
             _city = _json['a_city']
             _email = _json['v_email']
@@ -516,8 +584,9 @@ class Add_venue(Resource):
             _longitude = _json['a_longitude']
             if request.method == 'POST':
                 # sqlQuery = "INSERT INTO Venue(name, category, max_cap, current_cap, address, lattitude, longitude, queue_head, opening_time, closing_time) VALUES(%s, %s, %s, %s,%s, %s, %s, %s, %s, %s)"
-                bindData = (_name, _id, _category, _max_cap, _current_cap, _queue_head, _opening_time,
-                            _closing_time, _email, _street, _city, _state, _zip, _phone, _lattitude, _longitude)
+                bindData = (_name, _id, _category, _max_cap, _current_cap, _queue_head,
+                            _business_hours, _email, _street, _city, _state, _zip, _phone, _lattitude, _longitude)
+                print(bindData)
                 conn = connect()
                 # print("****** here *******")
                 cursor = conn.cursor()
@@ -595,14 +664,14 @@ class Add_ticket(Resource):
             _uid = _json['t_uid']
             _entry_time = _json["t_entry_time"]
             # _exit_time = _json['exit_time']
-            _token_number = _json['t_token_number']
+            # _token_number = _json['t_token_number']
             # _created_at = _json['created_at']
             # _status = _json['status']
 
             # venue_avg_time = execute(""" SELECT avg_time_spent FROM venue WHERE uid={} """.format(id), 'get', conn)
             # print(venue_avg_time)
             if request.method == 'POST':
-                bindData = (_user_id, _uid, _token_number,
+                bindData = (_user_id, _uid, 0,
                             "00:00:00", _entry_time, "00:00:00")
                 conn = connect()
                 # print("****** here *******")
@@ -698,6 +767,148 @@ class Delete_ticket(Resource):
             disconnect(conn)
 
 
+class Get_user_id(Resource):
+    def get(self, name, email, phone):
+        try:
+            conn = connect()
+            result = execute("""
+                select customer_id from customer where  name = {} and email = {} and phone = {}
+             """.format(name, email, phone), 'get', conn)
+            response = {}
+            response["result"] = result["result"]
+            return response, 200
+        except:
+            raise BadRequest(
+                'All_Users Request failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+
+""" ADMIN PAGE ENDPOINTS """
+
+
+class Queue_info_admin(Resource):
+    def get(self, id):
+        try:
+            conn = connect()
+
+            queue_info = execute("""
+                select default_time_spent, max_cap from venue where venue_uid={}
+                """.format(id), 'get', conn)
+            wait_time = execute(
+                """ select count(status) as cur_in_store from ticket where status = 'In-store' and venue_uid={} """.format(id), 'get', conn)
+            in_queue = execute(
+                """ select count(venue_uid) as In_queue from ticket where venue_uid={} and status = 'waiting' """.format(id), 'get', conn)
+            response = {}
+            queue_info["result"].append(wait_time["result"][0])
+            queue_info["result"].append(in_queue["result"][0])
+            response["result"] = queue_info["result"]
+            # print(queue_len)
+            return response, 200
+        except:
+            raise BadRequest(
+                'Queue_info Request failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+
+class Update_venue_default_time(Resource):
+    def put(self):
+        response = {}
+        try:
+            _json = request.json
+
+            _uid = _json['venue_uid']
+            _def_time = _json['default_time']
+
+            query = """ update venue set default_time_spent = '{}' where venue_uid = {} """.format(
+                _def_time, _uid)
+
+            conn = connect()
+            result = execute(query, 'post', conn)
+            print(result)
+            if result['code'] == 281:
+                response["result"] = "Succesfully update the default_time of the venue"
+                return response, 200
+            else:
+                response['message'] = "error updating the default time of the venue"
+                return response, 500
+        except:
+            raise BadRequest(
+                'Update_venue_default_time Request failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+
+class Update_venue_max_cap(Resource):
+    def put(self):
+        response = {}
+        try:
+            _json = request.json
+            _uid = _json['venue_uid']
+            _new_max_cap = _json['max_cap']
+            query = """ update venue set max_cap = {} where venue_uid = {} """.format(
+                _new_max_cap, _uid)
+            conn = connect()
+            result = execute(query, 'post', conn)
+            print(result)
+            if result['code'] == 281:
+                response["result"] = "Succesfully update the max capacity of the venue"
+                return response, 200
+            else:
+                response['message'] = "error updating the max capacity of the venue"
+                return response, 500
+        except:
+            raise BadRequest(
+                'Update_venue_max_cap Request failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+
+class Get_venue_info_admin(Resource):
+    def get(self, id):
+        try:
+            conn = connect()
+            # result = execute("""
+            #     select * from venue where venue_id={}
+            #  """.format(id), 'get', conn)
+            result = execute("""SELECT ticket.token_number, customer.name, customer.customer_id, ticket.created_at, ticket.status, customer.phone as customer_number
+            FROM ticket 
+			JOIN customer 
+            ON ticket.user_id = customer.customer_id and ticket.venue_uid = {} """.format(id), 'get', conn)
+            response = {}
+            response["result"] = result["result"]
+            return response, 200
+        except:
+            raise BadRequest(
+                ' Get_venue_info_admin failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+
+class Get_business_hours_admin(Resource):
+    def get(self, id):
+        try:
+            conn = connect()
+            # result = execute("""
+            #     select * from venue where venue_id={}
+            #  """.format(id), 'get', conn)
+            result = execute(
+                """SELECT business_hours from venue where venue_uid = {} """.format(id), 'get', conn, True)
+            print(type(result['result'][0]['business_hours']))
+            response = {}
+            business_hours = result["result"][0]["business_hours"]
+            print((business_hours))
+            # result['result'] = result["result"].replace("\", "")
+            response["result"] = business_hours
+            return response, 200
+        except:
+            raise BadRequest(
+                'Get_business_hours_admin failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+
 # Define API routes
 # Customer page
 # https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev
@@ -715,6 +926,20 @@ api.add_resource(Add_ticket, '/api/v2/add_ticket')
 api.add_resource(Delete_ticket, '/api/v2/delete_ticket/<int:id>')
 api.add_resource(Queue_info, '/api/v2/queue/<int:id>')
 api.add_resource(Update_queue_info, '/api/v2/update_queue')
+api.add_resource(Update_entry_time, '/api/v2/entry_time_button')
+api.add_resource(
+    Get_user_id, '/api/v2/get_customer_id/<string:name>/<string:email>/<string:phone>')
+
+
+# ADMIN page routes
+api.add_resource(Queue_info_admin, '/api/v2/queue_admin/<int:id>')
+api.add_resource(Update_venue_default_time,
+                 '/api/v2/venue_def_time_update')
+api.add_resource(Update_venue_max_cap, '/api/v2/venue_max_cap_admin')
+api.add_resource(Get_venue_info_admin, '/api/v2/venue_info_admin/<int:id>')
+api.add_resource(Get_business_hours_admin,
+                 '/api/v2/business_hours_admin/<int:id>')
+
 
 # Run on below IP address and port
 # Make sure port number is unused (i.e. don't use numbers 0-1023)
