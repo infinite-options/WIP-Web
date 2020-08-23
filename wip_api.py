@@ -193,6 +193,11 @@ class All_Users(Resource):
         finally:
             disconnect(conn)
 
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/all_users
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/all_users
+# Example: http://localhost:4000/api/v2/all_users
+
 
 """Gets the data for existing venues in the database
 
@@ -221,6 +226,11 @@ class All_Venues(Resource):
         finally:
             disconnect(conn)
 
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/all_venues
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/all_venues
+# Example: http://localhost:4000/api/v2/all_venues
+
 
 """Gets all the distinct venue categories in the databse
 
@@ -246,6 +256,11 @@ class All_venue_categories(Resource):
                 ' All_venue_categories failed, please try again later')
         finally:
             disconnect(conn)
+
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/get_categories
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/get_categories
+# Example: http://localhost:4000/api/v2/get_categories
 
 
 """Gets the customer tickets with their appropriate venues 
