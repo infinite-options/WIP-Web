@@ -165,10 +165,7 @@ def execute(sql, cmd, conn, skipSerialization=False):
         # response['sql'] = sql
         return response
 
-# WIP APIs
-
-# Function get is in Class All_Users
-
+#  ************************** WIP APIs **************************
 
 """Gets the data for existing users
 
@@ -269,7 +266,7 @@ class All_Tickets(Resource):
             result = execute("""
                 SELECT * FROM ticket
                 """, 'get', conn)
-            # print(result)
+            
             response = {}
             response["result"] = result["result"]
             return response, 200
@@ -279,43 +276,48 @@ class All_Tickets(Resource):
         finally:
             disconnect(conn)
 
-
-"""Gets the complete customer ticket information with their appropriate venues
-
-Returns
--------
-Json response
-    an array of ticket data in json format and response code
-"""
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/all_tickets
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/all_tickets
+# Example: http://localhost:4000/api/v2/all_tickets
 
 
-class Ticket_Info(Resource):
-    def get(self):
-        try:
-            conn = connect()
+# """Gets the complete customer ticket information with their appropriate venues
 
-            result = execute("""
-                SELECT t1.ticket_id AS ticket_id,
-                t1.created_at AS createdAt,
-                t2.name AS venueName,
-                t2.category AS VenueCategory,
-                t2.queue_head AS queueHead,
-                t2.closing_time AS closingTime,
-                t3.customer_id AS customerID,
-                t3.name AS customerName,
-                t3.phone AS cusomerPhoneNumber,
-                t3.email AS customerEmailAddress
-                FROM ticket t1 LEFT JOIN venue t2 ON t2.venue_id = t1.venue_id LEFT JOIN customer t3 ON t3.customer_id = t1.user_id
-                """, 'get', conn)
-            # print(result)
-            response = {}
-            response["result"] = result["result"]
-            return response, 200
-        except:
-            raise BadRequest(
-                'Ticket_info Request failed, please try again later.')
-        finally:
-            disconnect(conn)
+# Returns
+# -------
+# Json response
+#     an array of ticket data in json format and response code
+# """
+
+
+# class Ticket_Info(Resource):
+#     def get(self):
+#         try:
+#             conn = connect()
+
+#             result = execute("""
+#                 SELECT t1.ticket_id AS ticket_id,
+#                 t1.created_at AS createdAt,
+#                 t2.name AS venueName,
+#                 t2.category AS VenueCategory,
+#                 t2.queue_head AS queueHead,
+#                 t2.closing_time AS closingTime,
+#                 t3.customer_id AS customerID,
+#                 t3.name AS customerName,
+#                 t3.phone AS cusomerPhoneNumber,
+#                 t3.email AS customerEmailAddress
+#                 FROM ticket t1 LEFT JOIN venue t2 ON t2.venue_id = t1.venue_id LEFT JOIN customer t3 ON t3.customer_id = t1.user_id
+#                 """, 'get', conn)
+#             # print(result)
+#             response = {}
+#             response["result"] = result["result"]
+#             return response, 200
+#         except:
+#             raise BadRequest(
+#                 'Ticket_info Request failed, please try again later.')
+#         finally:
+#             disconnect(conn)
 
 
 """Gets a particular venue information
@@ -336,35 +338,28 @@ class Get_venue(Resource):
     def get(self, id):
         try:
             conn = connect()
-            # result = execute("""
-            #     select * from venue where venue_id={}
-            #  """.format(id), 'get', conn)
-            result = execute("""SELECT venue.venue_uid, ticket.entry_time, ticket.exit_time, venue.venue_id, venue.street, venue.city, venue.state, venue.zip, venue.lattitude, venue.longitude,
-            SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time, count(ticket.venue_uid) as queue_size
+            
+            result = execute("""SELECT venue.venue_uid, venue.venue_id, venue.street, venue.city, venue.state, venue.zip, venue.lattitude, venue.longitude,
+            SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time
             FROM ticket 
             right JOIN venue 
             ON ticket.venue_uid=venue.venue_uid and venue.venue_id = {} where venue.venue_id = {}
             GROUP BY venue.venue_uid """.format(id, id), 'get', conn)
 
-            print(result)
-
-            # number_of_venues = execute(
-            #     """ select count(venue_id) as venue_count from venue where venue_id = {} """.format(id), 'get', conn)
-
-            # print(number_of_venues["result"][0]['venue_count'])
+            queue_size = execute(
+                """ select venue.venue_uid, count(ticket.venue_uid) as queue_size from ticket RIGHT join venue on ticket.venue_uid = venue.venue_uid where venue.venue_id = {} and ticket.status = 'waiting'
+                    group by venue.venue_uid """.format(id), 'get', conn)
+      
             response = {}
-            data = {}
-            if len(result["result"]) == 0:
-                data = execute(
-                    """SELECT venue_uid, street, city, state, zip, lattitude, longitude from venue where venue_id = {}""".format(id), 'get', conn)
-                for idx, item in enumerate(data["result"]):
-                    print(idx, item)
-                    item["wait_time"] = 0
-                    item["queue_len"] = 0
 
-                response["result"] = data["result"]
-            else:
-                response["result"] = result["result"]
+            for itm2 in queue_size['result']:
+                print(itm2)
+                for itm1 in result['result']:
+                    print(itm1)
+                    if itm2['venue_uid'] == itm1['venue_uid']:
+                        itm1['queue_size'] = itm2['queue_size']
+
+            response["result"] = result["result"]
 
             return response, 200
         except:
@@ -372,6 +367,11 @@ class Get_venue(Resource):
                 'All_Users Request failed, please try again later.')
         finally:
             disconnect(conn)
+
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/get_venue/<int:id>
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/get_venue/<int:id>
+# Requires venue_id. Example: http://localhost:4000/api/v2/get_venue/10
 
 
 """Gets all venues that belongs to a particular category
@@ -404,8 +404,10 @@ class Get_category_venue(Resource):
         finally:
             disconnect(conn)
 
-# get a particular user
-# @app.route('/user/<int:id>')
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/get_venue/<string:name>
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/get_venue/<string:name>
+# Requires Category name. Example: http://localhost:4000/api/v2/get_venue/"Grocery"
 
 
 """Gets a particular user data
@@ -426,17 +428,24 @@ class Get_user(Resource):
     def get(self, id):
         try:
             conn = connect()
+
             result = execute("""
                 SELECT customer_id, name, email, phone, address FROM customer WHERE customer_id = {}
              """.format(id), 'get', conn)
+
             response = {}
             response["result"] = result["result"]
             return response, 200
         except:
             raise BadRequest(
-                'All_Users Request failed, please try again later.')
+                'Get_user Request failed, please try again later.')
         finally:
             disconnect(conn)
+
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/get_user/<int:id>
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/get_user/<int:id>
+# Requires customer_id. Example: http://localhost:4000/api/v2/get_user/10
 
 
 """Gets the size  and average waititnf time of the queue for a particular venue
@@ -469,6 +478,10 @@ class Queue_info(Resource):
         finally:
             disconnect(conn)
 
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/queue/<int:id>
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/queue/<int:id>
+# Requires venue_uid. Example: http://localhost:4000/api/v2/queue/10
 
 """Update the exit_time of a particular customer for a particular venue  (when a user scans the barcode to exit the venue)
 Returns
@@ -485,31 +498,35 @@ class Update_queue_info(Resource):
             _user_id = _json['user_id']
             _uid = _json['venue_uid']
             _exit_time = _json['exit_time']
+
             conn = connect()
             query = """ update ticket set exit_time = '{}' where venue_uid = {} and user_id = {}
              """.format(
                 _exit_time, _uid, _user_id)
 
-            print(query)
-            print("here1")
-
             result = execute(query, 'post', conn)
             execute(""" update ticket set status = 'processed' where venue_uid = {} and user_id = {} """.format(
                 _uid, _user_id), 'post', conn)
-            print(result)
-            print("here2")
+            
 
             wait_time = execute(
                 """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(_uid), 'get', conn)
             response = {}
             response["result"] = wait_time["result"]
-            # print(queue_len)
+            
             return response, 200
         except:
             raise BadRequest(
                 'Queue_update_info Request failed, please try again later.')
         finally:
             disconnect(conn)
+
+# PUT ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/update_queue
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/update_queue
+# "user_id": 1,
+# "venue_uid": 2, 
+# "exit_time": "09:05:00"
 
 
 """Update the entry_time of a particular customer for a particular venue (when a user scans the barcode to enter the venue)
@@ -533,18 +550,16 @@ class Update_entry_time(Resource):
              """.format(
                 _exit_time, _uid, _user_id)
 
-            print(query)
 
             result = execute(query, 'post', conn)
             execute(""" update ticket set status = 'In-store' where venue_uid = {} and user_id = {} """.format(
                 _uid, _user_id), 'post', conn)
-            print(result)
 
             wait_time = execute(
                 """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(_uid), 'get', conn)
             response = {}
             response["result"] = wait_time["result"]
-            # print(queue_len)
+        
             return response, 200
         except:
             raise BadRequest(
@@ -552,6 +567,12 @@ class Update_entry_time(Resource):
         finally:
             disconnect(conn)
 
+# PUT ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/entry_time_button
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/entry_time_button
+# "user_id": 1,
+# "venue_uid": 2, 
+# "entry_time": "09:05:00"
 
 """post the data for a new venue
 
@@ -583,18 +604,16 @@ class Add_venue(Resource):
             _lattitude = _json['a_lattitude']
             _longitude = _json['a_longitude']
             if request.method == 'POST':
-                # sqlQuery = "INSERT INTO Venue(name, category, max_cap, current_cap, address, lattitude, longitude, queue_head, opening_time, closing_time) VALUES(%s, %s, %s, %s,%s, %s, %s, %s, %s, %s)"
                 bindData = (_name, _id, _category, _max_cap, _current_cap, _queue_head,
                             _business_hours, _email, _street, _city, _state, _zip, _phone, _lattitude, _longitude)
                 print(bindData)
                 conn = connect()
-                # print("****** here *******")
                 cursor = conn.cursor()
 
                 cursor.callproc('CreateVenue', bindData)
                 conn.commit()
+
                 response["result"] = "Succesfully added the venue"
-                # respone.status_code = 200
                 return response, 200
             else:
                 response['message'] = "error adding venue data"
@@ -604,6 +623,27 @@ class Add_venue(Resource):
                 'Add_venue Request failed, please try again later.')
         finally:
             disconnect(conn)
+
+# POST ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/add_venue
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/add_venue
+# "v_name": "Trader Joe's",
+# "v_id": null,
+# "v_category": "Grocery",
+# "v_max_cap": 37,
+# "v_current_cap": 72,
+# "v_queue_head": 14,
+# "v_opening_time": "10:41 AM",
+# "v_closing_time": "5:39 PM",
+# "v_business_hours": {
+#   "M": ["9:00:00", "24:00:00"],
+#   "T": ["9:00:00", "24:00:00"],
+#   "W": ["9:00:00", "24:00:00"],
+#   "Th": ["9:00:00", "24:00:00"],
+#   "F": ["9:00:00", "24:00:00"],
+#   "S": ["9:00:00", "21:00:00"],
+#   "Su": ["9:00:00", "18:00:00"]
+
 
 
 """post the data for a new customer
@@ -620,14 +660,16 @@ class Add_customer(Resource):
         response = {}
         try:
             _json = request.json
+
             _name = _json['name']
             _email = _json['email']
             _phone = _json['phone']
-            _address = _json['address']
+            _latt = _json['current_long']
+            _longi = _json['current_lat']
 
             sqlQuery = """
-                         INSERT INTO customer (name, email, phone, address)
-                         VALUES('{}', '{}', '{}', '{}')""".format(_name, _email, _phone, _address)
+                         INSERT INTO customer (name, email, phone, current_long, current_lat)
+                         VALUES('{}', '{}', '{}', {}, {})""".format(_name, _email, _phone, _latt, _longi)
             conn = connect()
             result = execute(sqlQuery, 'post', conn)
             if result['code'] == 281:
@@ -636,18 +678,23 @@ class Add_customer(Resource):
             else:
                 response['message'] = "error adding customer data"
                 return response, 500
-        # else:
-        #     response['message'] = "customer info is missing"
-        #     return response, 400
         except:
             raise BadRequest(
                 'Add_customer Request failed, please try again later.')
         finally:
             disconnect(conn)
 
+# POST ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/add_customer
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/add_customer
+# {"name": "John Doe",
+#  "email": "johndoe@gmail.com", 
+# "phone": "123-353-4567", 
+# "current_long": 12.9989,
+#  "current_lat": -10.34232 }
+
 
 """post the data for a new ticket
-
 
 Returns
 -------
@@ -663,24 +710,17 @@ class Add_ticket(Resource):
             _user_id = _json['t_user_id']
             _uid = _json['t_uid']
             _entry_time = _json["t_entry_time"]
-            # _exit_time = _json['exit_time']
-            # _token_number = _json['t_token_number']
-            # _created_at = _json['created_at']
-            # _status = _json['status']
-
-            # venue_avg_time = execute(""" SELECT avg_time_spent FROM venue WHERE uid={} """.format(id), 'get', conn)
-            # print(venue_avg_time)
+            
             if request.method == 'POST':
                 bindData = (_user_id, _uid, 0,
                             "00:00:00", _entry_time, "00:00:00")
+
                 conn = connect()
-                # print("****** here *******")
                 cursor = conn.cursor()
 
                 cursor.callproc('AddTicket', bindData)
                 conn.commit()
                 response["result"] = "Succesfully added the ticket"
-                # respone.status_code = 200
                 return response, 200
             else:
                 response['message'] = "error adding ticket data"
@@ -691,45 +731,46 @@ class Add_ticket(Resource):
         finally:
             disconnect(conn)
 
+# POST ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/add_ticket
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/add_ticket
+# {"t_user_id": 12,
+#  "t_uid": 10
+#  "t_entry_time": "12:12:00" }
 
-# class Add_ticket(Resource):
-#     def post(self):
-#         response = {}
-#         try:
-#             _json = request.json
-#             _user_id = _json['t_user_id']
-#             _uid = _json['t_uid']
-#             _entry_time = _json['t_entry_time']
-#             # _exit_time = _json['exit_time']
-#             _token_number = _json['t_token_number']
-#             # _created_at = _json['created_at']
-#             # _status = _json['status']
-#             conn = connect()
 
-#             # venue_avg_time = execute(""" SELECT avg_time_spent FROM venue WHERE uid={} """.format(id), 'get', conn)
-#             # print(venue_avg_time)
-#             bind_date = (_user_id, _uid, _token_number, "00:00:00" ,_entry_time, "00:00:00" , "00:00:00")
-#             sqlQuery = """
-#                       INSERT INTO ticket(user_id, uid, token_number, created_at, entry_time, exit_time, time_spent)
-#                       VALUES ('{}','{}','{}',{}, '{}', {}, {})
-#                       """.format(_user_id, _uid, _token_number, "00:00:00" ,_entry_time, "00:00:00" , "00:00:00")
-#                         #  INSERT INTO ticket (user_id, uid, token_number, created_at)
-#                         #  VALUES('{}', '{}', '{}', '{}')""".format(_user_id, _uid, _token_number, _created_at)
-#             result = execute(sqlQuery, 'post', conn)
-#             if result['code'] == 281:
-#                 response["result"] = "Succesfully added the ticket"
-#                 return response, 200
-#             else:
-#                 response['message'] = "error adding ticket data"
-#                 return response, 500
-#         # else:
-#         #     response['message'] = "customer info is missing"
-#         #     return response, 400
-#         except:
-#             raise BadRequest(
-#                 'Add_ticket Request failed, please try again later.')
-#         finally:
-#             disconnect(conn)
+class Update_customer_coordinates(Resource):
+    def put(self):
+        response = {}
+        try:
+            _json = request.json
+            _customer_id = _json['customer_id']
+            _long = _json['current_long']
+            _latt = _json['current_lat']
+
+            query = """ update customer set current_long = {}, current_lat = {} where customer_id = {} """.format(
+                _long, _latt, _customer_id)
+            conn = connect()
+            result = execute(query, 'post', conn)
+            print(result)
+            if result['code'] == 281:
+                response["result"] = "Succesfully update the lattitude and longitude of the customer"
+                return response, 200
+            else:
+                response['message'] = "error updating the the lattitude and longitude of the customer"
+                return response, 500
+        except:
+            raise BadRequest(
+                'Update_customer_coordinates Request failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/update_customer_coords
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/update_customer_coords
+# {"customer_id": 12,
+#  "current_long": -116.244
+#  "current_lat": 43.4599 }
 
 
 """Delete a particular ticket
@@ -768,12 +809,12 @@ class Delete_ticket(Resource):
 
 
 class Get_user_id(Resource):
-    def get(self, name, email, phone):
+    def get(self, phone):
         try:
             conn = connect()
             result = execute("""
-                select customer_id from customer where  name = {} and email = {} and phone = {}
-             """.format(name, email, phone), 'get', conn)
+                select customer_id from customer where phone = {}
+             """.format(phone), 'get', conn)
             response = {}
             response["result"] = result["result"]
             return response, 200
@@ -783,8 +824,33 @@ class Get_user_id(Resource):
         finally:
             disconnect(conn)
 
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/get_customer_id/<string:phone>
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/get_customer_id/<string:phone>
+# Requires  customer phone number. Example: http://localhost:4000/api/v2/get_customer_id/"123-456-7878"
 
-""" ADMIN PAGE ENDPOINTS """
+class Get_customer_token(Resource):
+    def get(self, user_id, venue_uid):
+        try:
+            conn = connect()
+            result = execute("""
+                select token_number from ticket where user_id = {} and venue_uid = {} and status = 'waiting'
+             """.format(user_id, venue_uid), 'get', conn)
+            response = {}
+            response["result"] = result["result"]
+            return response, 200
+        except:
+            raise BadRequest(
+                'Get_customer_token Request failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/customer_token/<int:user_id>/<int:venue_uid>
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/customer_token/<int:user_id>/<int:venue_uid>
+# Requires user_id and venue_uid. Example: http://localhost:4000/api/v2/customer_token/10/12
+
+""" ****************** ADMIN PAGE ENDPOINTS ****************** """
 
 
 class Queue_info_admin(Resource):
@@ -795,10 +861,13 @@ class Queue_info_admin(Resource):
             queue_info = execute("""
                 select default_time_spent, max_cap from venue where venue_uid={}
                 """.format(id), 'get', conn)
+
             wait_time = execute(
                 """ select count(status) as cur_in_store from ticket where status = 'In-store' and venue_uid={} """.format(id), 'get', conn)
+
             in_queue = execute(
                 """ select count(venue_uid) as In_queue from ticket where venue_uid={} and status = 'waiting' """.format(id), 'get', conn)
+
             response = {}
             queue_info["result"].append(wait_time["result"][0])
             queue_info["result"].append(in_queue["result"][0])
@@ -810,6 +879,11 @@ class Queue_info_admin(Resource):
                 'Queue_info Request failed, please try again later.')
         finally:
             disconnect(conn)
+
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/queue_admin/<int:id>
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/queue_admin/<int:id>
+# Requires venue_uid. Example: http://localhost:4000/api/v2/venue_info_admin/11
 
 
 class Update_venue_default_time(Resource):
@@ -838,6 +912,11 @@ class Update_venue_default_time(Resource):
                 'Update_venue_default_time Request failed, please try again later.')
         finally:
             disconnect(conn)
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/venue_def_time_update
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/venue_def_time_update
+# {"venue_uid": 12,
+# "default_time": "00:02:00" }
 
 
 class Update_venue_max_cap(Resource):
@@ -847,6 +926,7 @@ class Update_venue_max_cap(Resource):
             _json = request.json
             _uid = _json['venue_uid']
             _new_max_cap = _json['max_cap']
+
             query = """ update venue set max_cap = {} where venue_uid = {} """.format(
                 _new_max_cap, _uid)
             conn = connect()
@@ -863,19 +943,23 @@ class Update_venue_max_cap(Resource):
                 'Update_venue_max_cap Request failed, please try again later.')
         finally:
             disconnect(conn)
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/venue_max_cap_admin
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/venue_max_cap_admin
+# {"venue_uid": 12,
+# "max_cap": 20 }
 
 
 class Get_venue_info_admin(Resource):
     def get(self, id):
         try:
             conn = connect()
-            # result = execute("""
-            #     select * from venue where venue_id={}
-            #  """.format(id), 'get', conn)
+            
             result = execute("""SELECT ticket.token_number, customer.name, customer.customer_id, ticket.created_at, ticket.status, customer.phone as customer_number
             FROM ticket 
 			JOIN customer 
             ON ticket.user_id = customer.customer_id and ticket.venue_uid = {} """.format(id), 'get', conn)
+
             response = {}
             response["result"] = result["result"]
             return response, 200
@@ -885,19 +969,22 @@ class Get_venue_info_admin(Resource):
         finally:
             disconnect(conn)
 
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/venue_info_admin/<int:id>
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/venue_info_admin/<int:id>
+# Requires venue_uid. Example: http://localhost:4000/api/v2/venue_info_admin/11
+
 
 class Get_business_hours_admin(Resource):
     def get(self, id):
         try:
             conn = connect()
-            # result = execute("""
-            #     select * from venue where venue_id={}
-            #  """.format(id), 'get', conn)
             result = execute(
                 """SELECT business_hours from venue where venue_uid = {} """.format(id), 'get', conn, True)
-            print(type(result['result'][0]['business_hours']))
+            print((result['result'][0]['business_hours']))
             response = {}
-            business_hours = result["result"][0]["business_hours"]
+            business_hours = result["result"][0]["business_hours"].replace(
+                "\\", "")
             print((business_hours))
             # result['result'] = result["result"].replace("\", "")
             response["result"] = business_hours
@@ -907,6 +994,44 @@ class Get_business_hours_admin(Resource):
                 'Get_business_hours_admin failed, please try again later.')
         finally:
             disconnect(conn)
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/business_hours_admin/<int:id>
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_hours_admin/<int:id>
+# Requires venu_uid. Example: http://localhost:4000/api/v2/business_hours_admin/11
+
+
+class update_business_hours_admin(Resource):
+    def put(self):
+        response = {}
+        try:
+            _json = request.json
+
+            _uid = _json['venue_uid']
+            _new_business_hours = _json['new_business_hours']
+
+            query = """ update venue set business_hours = '{}' where venue_uid = {} """.format(
+                _new_business_hours, _uid)
+            conn = connect()
+            result = execute(query, 'post', conn)
+            print(result)
+            if result['code'] == 281:
+                response["result"] = "Succesfully update the business hours of the venue"
+                return response, 200
+            else:
+                response['message'] = "error updating the max business hours of the venue"
+                return response, 500
+        except:
+            raise BadRequest(
+                'update_business_hours_admin Request failed, please try again later.')
+        finally:
+            disconnect(conn)
+# ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/business_hours_update
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_hours_update
+# {"venue_uid":12,
+# "new_business_hours":
+# "{\"F\": [\"9:00:00\", \"21:00:00\"], \"M\": [\"9:00:00\", \"24:00:00\"], \"S\": [\"9:00:00\", \"21:00:00\"], \"T\": [\"9:00:00\", \"24:00:00\"], \"W\": [\"9:00:00\", \"24:00:00\"], \"Su\": [\"9:00:00\", \"18:00:00\"], \"Th\": [\"9:00:00\", \"24:00:00\"]}"
+
 
 
 # Define API routes
@@ -921,14 +1046,17 @@ api.add_resource(Get_category_venue, '/api/v2/get_venue/<string:name>')
 api.add_resource(Add_venue, '/api/v2/add_venue')
 api.add_resource(Add_customer, '/api/v2/add_customer')
 api.add_resource(All_venue_categories, '/api/v2/get_categories')
-api.add_resource(Ticket_Info, '/api/v2/tickets')
+# api.add_resource(Ticket_Info, '/api/v2/tickets')
 api.add_resource(Add_ticket, '/api/v2/add_ticket')
 api.add_resource(Delete_ticket, '/api/v2/delete_ticket/<int:id>')
 api.add_resource(Queue_info, '/api/v2/queue/<int:id>')
-api.add_resource(Update_queue_info, '/api/v2/update_queue')
+api.add_resource(Update_queue_info, '/api/v2/update_queue') #to EXIT the store 
 api.add_resource(Update_entry_time, '/api/v2/entry_time_button')
 api.add_resource(
-    Get_user_id, '/api/v2/get_customer_id/<string:name>/<string:email>/<string:phone>')
+    Get_user_id, '/api/v2/get_customer_id/<string:phone>')
+api.add_resource(Update_customer_coordinates, '/api/v2/update_customer_coords')
+api.add_resource(Get_customer_token,
+                 '/api/v2/customer_token/<int:user_id>/<int:venue_uid>')
 
 
 # ADMIN page routes
@@ -939,6 +1067,7 @@ api.add_resource(Update_venue_max_cap, '/api/v2/venue_max_cap_admin')
 api.add_resource(Get_venue_info_admin, '/api/v2/venue_info_admin/<int:id>')
 api.add_resource(Get_business_hours_admin,
                  '/api/v2/business_hours_admin/<int:id>')
+api.add_resource(update_business_hours_admin, '/api/v2/business_hours_update')
 
 
 # Run on below IP address and port
