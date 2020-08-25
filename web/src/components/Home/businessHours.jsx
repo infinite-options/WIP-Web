@@ -12,7 +12,7 @@ class BusinessHours extends React.Component {
     render() {
         return (
             <div className={styles.businessHoursSection}>
-                <Typography variant="h4"> Business Hours </Typography>
+                <Typography variant="h4" className={styles.sectionTitle}> Business Hours </Typography>
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>

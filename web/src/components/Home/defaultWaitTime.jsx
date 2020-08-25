@@ -67,7 +67,7 @@ class DefaultWaitTime extends React.Component {
                 )
             } else {
                 return (
-                    <div className={styles.venueInfoEditing}>
+                    <div className={styles.venueInfoEditing} className={styles.sectionTitle}>
                         <Button
                             variant="contained"
                             color="primary"
@@ -86,7 +86,7 @@ class DefaultWaitTime extends React.Component {
     render() {
         return (
             <div className={styles.venueInfo}>
-                <Typography variant='h6'> Default Wait Time </Typography>
+                <Typography variant='h6' className={styles.sectionTitle}> Default Wait Time </Typography>
                 <Paper className={styles.venueInfoButton}>
                     <Typography variant='body1'> {this.props.defaultWaitTime} </Typography>
                     {this.editDefaultWaitTimeStatus()}

@@ -40,7 +40,7 @@ class QueueTable extends React.Component {
                         <div style={{
                             padding: '10px 0 0 15px'
                         }}>
-                            <Typography variant="h4">
+                            <Typography variant="h4" className={styles.sectionTitle}>
                                 {props.title}
                             </Typography>
                         </div>

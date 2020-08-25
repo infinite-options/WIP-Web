@@ -67,7 +67,7 @@ class MaxCapacity extends React.Component {
     render() {
         return (
             <div className={styles.venueInfo}>
-                <Typography variant='h6'> Max Capacity </Typography>
+                <Typography variant='h6' className={styles.sectionTitle}> Max Capacity </Typography>
                 <Paper className={styles.venueInfoButton}>
                     <Typography variant='body1'> {isNaN(this.props.maxCapacity) ? '' : this.props.maxCapacity} </Typography>
                     {this.editMaxCapacity()}

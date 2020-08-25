@@ -10,7 +10,7 @@ class InVenue extends React.Component {
     render() {
         return (
             <div className={styles.venueInfo}>
-                <Typography variant='h6'> In Venue </Typography>
+                <Typography variant='h6' className={styles.sectionTitle}> In Venue </Typography>
                 <Paper className={styles.venueInfoButton}>
                     <Typography variant='body1'> {isNaN(this.props.inVenue) ? '' : this.props.inVenue} </Typography>
                 </Paper>
