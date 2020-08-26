@@ -26,9 +26,11 @@ class QueueTable extends React.Component {
                         render: row => {
                             switch(row.status) {
                                 case 'waiting':
-                                    return row.entry_time
+                                    return row.entry_time;
+                                case 'processed':
+                                    return 'exited';
                                 default:
-                                    return row.status
+                                    return row.status;
                             }
                         }
                     },

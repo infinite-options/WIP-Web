@@ -45,9 +45,31 @@ export const selectLocation = (venue_uid) => dispatch => {
         axios
             .get(API_URL+'venue_info_admin/'+venue_uid.toString())
             .then(function (res) {
+                let data = res.data.result;
+                console.log(data);
+                data.sort((eltA, eltB) => {
+                    if(eltA.status === 'In-store') {
+                        return (eltB.status === 'In-store') ? 0 : -1;
+                    } else if (eltA.status === 'waiting') {
+                        switch(eltB.status) {
+                            case 'In-store':
+                                return 1;
+                            case 'waiting':
+                                return 0;
+                            case 'processed':
+                                return -1;
+                        }
+                    } else if (eltA.status === 'processed') {
+                        return (eltB.status === 'processed') ? 0 : 1;
+                    } else {
+                        // Should not happen, only for error prevention in future
+                        return 0;
+                    }
+                });
+                console.log(data);
                 dispatch({
                     type: FETCH_CURRENT_QUEUE,
-                    payload: res.data.result,
+                    payload: data,
                 })
             })
             .catch(function (error) {
