@@ -11,6 +11,19 @@
     margin-left: 5%;
 }
 
+.businessHoursButtonSection {
+    display: flex;
+}
+
+.businessHoursButtonItem {
+    flex: 1;
+}
+
+.businessHoursButton {
+    margin: 15px;
+    padding: 15px;
+}
+
 .currentQueue {
     width: 94%;
     margin-left: 3%;

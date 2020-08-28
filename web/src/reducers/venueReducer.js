@@ -1,5 +1,6 @@
 import { FETCH_VENUES, SELECT_CATEGORY, SELECT_VENUE, SELECT_LOCATION,
     FETCH_CURRENT_QUEUE, CHANGE_FILTER_QUEUE, FETCH_QUEUE_INFO, FETCH_BUSINESS_HOURS,
+    CHANGE_STATUS_BUSINESS_HOURS, CHANGE_BUSINESS_HOURS, SUBMIT_BUSINESS_HOURS,
     CHANGE_STATUS_DEFAULT_WAIT_TIME, CHANGE_DEFAULT_WAIT_TIME, SUBMIT_DEFAULT_WAIT_TIME,
     CHANGE_STATUS_MAX_CAP, CHANGE_MAX_CAP, SUBMIT_MAX_CAP, } from './actions/venueTypes';
 
@@ -16,12 +17,12 @@ const initialState = {
     filteredQueue: [],
     queueFilter: allStatus,
     businessHours: noBusinessHours,
+    editingBusinessHours: false,
+    newBusinessHours: noBusinessHours,
     defaultWaitTime: '',
     maxCapacity: NaN,
     inVenue: NaN,
     inQueue: NaN,
-    editingBusinessHours: false,
-    newBusinesssHours: {},
     editingDefaultWaitTime: false,
     newDefaultWaitTimeHour: '',
     newDefaultWaitTimeMinute: '',
@@ -48,6 +49,8 @@ export default function(state = initialState, action) {
                 filteredQueue: [],
                 queueFilter: allStatus,
                 businessHours: noBusinessHours,
+                editingBusinessHours: false,
+                newBusinessHours: noBusinessHours,
                 defaultWaitTime: '',
                 maxCapacity: NaN,
                 inVenue: NaN,
@@ -68,6 +71,8 @@ export default function(state = initialState, action) {
                 filteredQueue: [],
                 queueFilter: allStatus,
                 businessHours: noBusinessHours,
+                editingBusinessHours: false,
+                newBusinessHours: noBusinessHours,
                 defaultWaitTime: '',
                 maxCapacity: NaN,
                 inVenue: NaN,
@@ -87,6 +92,8 @@ export default function(state = initialState, action) {
                 filteredQueue: [],
                 queueFilter: allStatus,
                 businessHours: noBusinessHours,
+                editingBusinessHours: false,
+                newBusinessHours: noBusinessHours,
                 defaultWaitTime: '',
                 maxCapacity: NaN,
                 inVenue: NaN,
@@ -124,6 +131,26 @@ export default function(state = initialState, action) {
         case FETCH_BUSINESS_HOURS:
             return {
                 ...state,
+                businessHours: action.payload,
+                newBusinessHours: action.payload,
+            }
+
+        case CHANGE_STATUS_BUSINESS_HOURS:
+            return {
+                ...state,
+                editingBusinessHours: action.payload,
+            }
+
+        case CHANGE_BUSINESS_HOURS:
+            return {
+                ...state,
+                newBusinessHours: action.payload,
+            }
+        
+        case SUBMIT_BUSINESS_HOURS:
+            return {
+                ...state,
+                editingBusinessHours: false,
                 businessHours: action.payload,
             }
 

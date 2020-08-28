@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import { FETCH_VENUES, SELECT_CATEGORY, SELECT_VENUE, SELECT_LOCATION,
     FETCH_CURRENT_QUEUE, CHANGE_FILTER_QUEUE, FETCH_QUEUE_INFO, FETCH_BUSINESS_HOURS,
+    CHANGE_STATUS_BUSINESS_HOURS, CHANGE_BUSINESS_HOURS, SUBMIT_BUSINESS_HOURS,
     CHANGE_STATUS_DEFAULT_WAIT_TIME, CHANGE_DEFAULT_WAIT_TIME, SUBMIT_DEFAULT_WAIT_TIME,
     CHANGE_STATUS_MAX_CAP, CHANGE_MAX_CAP, SUBMIT_MAX_CAP } from './venueTypes';
 
@@ -46,7 +47,6 @@ export const selectLocation = (venue_uid) => dispatch => {
             .get(API_URL+'venue_info_admin/'+venue_uid.toString())
             .then(function (res) {
                 let data = res.data.result;
-                console.log(data);
                 data.sort((eltA, eltB) => {
                     if(eltA.status === 'In-store') {
                         return (eltB.status === 'In-store') ? 0 : -1;
@@ -58,15 +58,17 @@ export const selectLocation = (venue_uid) => dispatch => {
                                 return 0;
                             case 'processed':
                                 return -1;
+                            //Should not happen, only for error prevention
+                            default:
+                                return 0;
                         }
                     } else if (eltA.status === 'processed') {
                         return (eltB.status === 'processed') ? 0 : 1;
                     } else {
-                        // Should not happen, only for error prevention in future
+                        // Should not happen, only for error prevention
                         return 0;
                     }
                 });
-                console.log(data);
                 dispatch({
                     type: FETCH_CURRENT_QUEUE,
                     payload: data,
@@ -216,6 +218,41 @@ export const submitMaxCapacity = (venue_uid, newMaxCap) => dispatch => {
             dispatch({
                 type: SUBMIT_MAX_CAP,
                 payload: Number(newMaxCap),
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+export const editBusinessHoursStatus = (newStatus) => dispatch => {
+    dispatch({
+        type: CHANGE_STATUS_BUSINESS_HOURS,
+        payload: newStatus,
+    })
+};
+
+export const editBusinessHours = (businessHours, newDate, index, newTime) => dispatch => {
+    let newBusinessHours = businessHours;
+    newBusinessHours[newDate][index] = newTime;
+    dispatch({
+        type: CHANGE_BUSINESS_HOURS,
+        payload: newBusinessHours,
+    })
+}
+
+export const submitBusinessHours = (businessHours, venue_uid) => dispatch => {
+    console.log('submitBusinessHours called')
+    console.log(businessHours,venue_uid)
+    axios
+        .put(API_URL+'business_hours_update',{
+            venue_uid: venue_uid,
+            new_business_hours: JSON.stringify(businessHours),
+        })
+        .then(function(res) {
+            dispatch({
+                type: SUBMIT_BUSINESS_HOURS,
+                payload: businessHours,
             })
         })
         .catch(function (error) {
