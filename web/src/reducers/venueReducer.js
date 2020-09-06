@@ -5,8 +5,7 @@ import { FETCH_VENUES, SELECT_CATEGORY, SELECT_VENUE, SELECT_LOCATION,
     CHANGE_STATUS_MAX_CAP, CHANGE_MAX_CAP, SUBMIT_MAX_CAP, } from './actions/venueTypes';
 
 import { noCategory, noVenue, noLocation,
-    noBusinessHours,
-    allStatus } from '../constants';
+    noBusinessHours, allStatus } from '../constants';
 
 const initialState = {
     venues: [],

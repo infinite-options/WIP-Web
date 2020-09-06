@@ -1,19 +1,51 @@
-import React from 'react';
-import { Provider } from 'react-redux';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-import store from './reducers/store';
+import { fetchVenues } from './reducers/actions/venueActions';
+
+import { BrowserRouter as Router, Switch, } from "react-router-dom";
+import AppliedRoute from './AppliedRoute'
+
+import NavBar from './components/NavBar';
+import Home from './components/Home';
+import NewVenue from './components/NewVenue';
+import NotFound from './components/NotFound';
+
 import './App.css';
 
-import Home from './components/Home/home';
-
-function App() {
+function App(props) {
+  useEffect(() => {
+    props.fetchVenues();
+  })
   return (
-    <Provider store={store}>
-      <div className="App">
-        <Home />
-      </div>
-    </Provider>
+    <div className="App">
+      <Router>
+        <NavBar />
+        <Switch>
+          <AppliedRoute
+            exact path="/"
+            component={Home}
+          />
+          <AppliedRoute
+            exact path="/new-venue"
+            component={NewVenue}
+          />
+          <AppliedRoute
+            path="*"
+            component={NotFound}
+          />
+        </Switch>
+      </Router>
+    </div>
   );
 }
 
-export default App;
+App.propTypes = {
+  fetchVenues: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = state => ({
+})
+
+export default connect(mapStateToProps, { fetchVenues })(App);
