@@ -3,6 +3,8 @@
 export const API_URL = 'https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
 // export const API_URL = 'http://localhost:2000/api/v2/';
 
+export const BING_LCOATION_API_URL = 'http://dev.virtualearth.net/REST/v1/Locations/';
+
 // Names for default Options for venue selections
 
 export const noCategory = '_noCategory';
