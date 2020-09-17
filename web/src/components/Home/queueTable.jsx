@@ -20,7 +20,7 @@ class QueueTable extends React.Component {
                 columns={[
                     { title:'Token Number', field: 'token_number' },
                     { title:'Name', field: 'name'},
-                    { title: 'Created at', field: 'created_at'},
+                    { title: 'Created at', field: 'ticket_created_at'},
                     {   title: 'Status',
                         field: 'status',
                         render: row => {
