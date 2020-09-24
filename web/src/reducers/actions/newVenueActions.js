@@ -114,6 +114,7 @@ export const submitVenue = (venues, category, selectedVenueName, newVenueName,
                     lat = location.geocodePoints[1].coordinates[0];
                     long = location.geocodePoints[1].coordinates[1];
                 }
+                // Format Default Wait Time
                 let formattedHour = defaultWaitTime.hr;
                 let formattedMin = defaultWaitTime.min;
                 if(formattedHour.length === 1) {
@@ -127,6 +128,20 @@ export const submitVenue = (venues, category, selectedVenueName, newVenueName,
                     formattedMin = '00';
                 }
                 let formattedTime = formattedHour + ':' + formattedMin + ':00';
+                // Format business hours
+                let businessHoursCopy = JSON.parse(JSON.stringify(businessHours));
+                for( const day in businessHoursCopy) {
+                    if(businessHoursCopy[`${day}`][0] === '') {
+                        businessHoursCopy[`${day}`][0] = '09:00:00';
+                    } else {
+                        businessHoursCopy[`${day}`][0] += ':00'
+                    }
+                    if(businessHoursCopy[`${day}`][1] === '') {
+                        businessHoursCopy[`${day}`][1] = '17:00:00';
+                    } else {
+                        businessHoursCopy[`${day}`][1] += ':00'
+                    }
+                }
                 if(selectedVenueName !== needVenue) {
                     // Manipulate venues to get venue id
                     let filteredVenues = venues.filter((elt) => {
@@ -137,21 +152,23 @@ export const submitVenue = (venues, category, selectedVenueName, newVenueName,
                         v_name: selectedVenueName,
                         v_id: venue_id,
                         v_category: category,
-                        v_max_cap:40,
-                        v_current_cap:0,
-                        v_queue_head:0,
-                        v_business_hours: JSON.stringify(businessHours),
-                        a_street: address.address,
-                        a_city: address.city,
-                        a_state: address.state,
-                        a_zip: address.zip,
-                        a_phone: phone,
+                        v_max_cap:maxCapacity,
+                        v_in_store_cap:0,
+                        v_queue_cap:0,
+                        v_current_token: 0,
+                        v_queue_head: 0,
+                        v_business_hours: JSON.stringify(businessHoursCopy),
+                        v_street: address.address,
+                        v_city: address.city,
+                        v_state: address.state,
+                        v_zip: address.zip,
+                        v_phone: phone,
                         v_email: email,
-                        a_lattitude: lat,
-                        a_longitude: long,
+                        v_latitude: lat.toString(),
+                        v_longitude: long.toString(),
                         v_default_time_spent: formattedTime,
                     };
-                    console.log(object)
+                    console.log(JSON.stringify(object))
                     axios
                         .post(API_URL+'add_venue',object)
                         .then((res) => {
@@ -168,21 +185,23 @@ export const submitVenue = (venues, category, selectedVenueName, newVenueName,
                         v_name: newVenueName,
                         v_id: null,
                         v_category: category,
-                        v_max_cap:40,
-                        v_current_cap:0,
-                        v_queue_head:0,
-                        v_business_hours: JSON.stringify(businessHours),
-                        a_street: address.address,
-                        a_city: address.city,
-                        a_state: address.state,
-                        a_zip: address.zip,
-                        a_phone: phone,
+                        v_max_cap:maxCapacity,
+                        v_in_store_cap:0,
+                        v_queue_cap:0,
+                        v_current_token: 0,
+                        v_queue_head: 0,
+                        v_business_hours: JSON.stringify(businessHoursCopy),
+                        v_street: address.address,
+                        v_city: address.city,
+                        v_state: address.state,
+                        v_zip: address.zip,
+                        v_phone: phone,
                         v_email: email,
-                        a_lattitude: lat,
-                        a_longitude: long,
+                        v_latitude: lat.toString(),
+                        v_longitude: long.toString(),
                         v_default_time_spent: formattedTime,
                     };
-                    console.log(object)
+                    console.log(JSON.stringify(object))
                     axios
                         .post(API_URL+'add_venue',object)
                         .then((res) => {

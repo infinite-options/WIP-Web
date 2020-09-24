@@ -21,21 +21,25 @@ function App(props) {
   return (
     <div className="App">
       <Router>
-        <NavBar />
-        <Switch>
-          <AppliedRoute
-            exact path="/"
-            component={Home}
-          />
-          <AppliedRoute
-            exact path="/new-venue"
-            component={NewVenue}
-          />
-          <AppliedRoute
-            path="*"
-            component={NotFound}
-          />
-        </Switch>
+        <div className="NavBar">
+          <NavBar />
+        </div>
+        <div className="Main">
+          <Switch>
+            <AppliedRoute
+              exact path="/"
+              component={Home}
+            />
+            <AppliedRoute
+              exact path="/new-venue"
+              component={NewVenue}
+            />
+            <AppliedRoute
+              path="*"
+              component={NotFound}
+            />
+          </Switch>
+        </div>
       </Router>
     </div>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Link } from "react-router-dom";
-import { AppBar, Button, Toolbar } from "@material-ui/core";
+// import { AppBar, Button, Toolbar } from "@material-ui/core";
 
 import styles from './navBar.module.css';
 
@@ -9,12 +9,24 @@ class NavBar extends React.Component {
     render() {
         return (
             <div className={styles.root}>
-                <AppBar>
-                    <Toolbar>
-                        <Link to="/"> <Button> <div className={styles.navElt}> Home </div> </Button> </Link>
-                        <Link to="/new-venue"> <Button> <div className={styles.navElt}> New Venue </div> </Button>  </Link>
-                    </Toolbar>
-                </AppBar>
+                <div className={styles.container1}>
+                    <h1 className={styles.heading}>WIP</h1>
+                </div>
+                <div className={styles.container2}>
+                    &nbsp;&nbsp;
+                        Admin
+                    &nbsp;&nbsp;|
+                    &nbsp;&nbsp;
+                    <Link to="/">
+                        Current Queue Table
+                    </Link>
+                    &nbsp;&nbsp;|
+                    &nbsp;&nbsp;
+                    <Link to="/new-venue">
+                        Add Venue
+                    </Link>
+                    &nbsp;&nbsp;|
+                </div>
             </div>
         )
     }
