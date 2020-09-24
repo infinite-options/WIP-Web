@@ -27,7 +27,6 @@ import decimal
 import sys
 import json
 import pytz
-from tzlocal import get_localzone # $ pip install tzlocal
 import pymysql
 import requests
 
@@ -75,7 +74,7 @@ api = Api(app)
 utc = pytz.utc
 def getToday(): return datetime.strftime(datetime.now(utc), "%Y-%m-%d")
 def getNow(): return datetime.strftime(datetime.now(utc), "%Y-%m-%d %H:%M:%S")
-def getNowTime(): return datetime.strftime(datetime.now(utc), "%H:%M:%S")
+
 
 # def getToday(): return datetime.strftime(date.today(), "%Y-%m-%d")
 # def getNow(): return datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
@@ -139,7 +138,7 @@ def execute(sql, cmd, conn, skipSerialization=False):
     response = {}
     try:
         with conn.cursor() as cur:
-            print(sql)
+            # print(sql)
             cur.execute(sql)
             if cmd is 'get':
                 result = cur.fetchall()
@@ -168,7 +167,6 @@ def execute(sql, cmd, conn, skipSerialization=False):
         return response
 
 #  ************************** WIP APIs **************************
-
 
 """Gets the data for existing users
 
@@ -266,7 +264,7 @@ class All_venue_categories(Resource):
 # Example: http://localhost:4000/api/v2/get_categories
 
 
-"""Gets the customer tickets with their appropriate venues
+"""Gets the customer tickets with their appropriate venues 
 
 
 Returns
@@ -284,7 +282,7 @@ class All_Tickets(Resource):
             result = execute("""
                 SELECT * FROM ticket
                 """, 'get', conn)
-
+            
             response = {}
             response["result"] = result["result"]
             return response, 200
@@ -352,112 +350,53 @@ Json response
 """
 
 
-# class Get_venue(Resource):
-#     def get(self, id):
-#         try:
-#             conn = connect()
-
-#             result = execute("""SELECT venue.venue_uid, venue.venue_id, venue.street, venue.city, venue.state, venue.zip, venue.latitude, venue.longitude,
-#             SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time
-#             FROM ticket
-#             right JOIN venue
-#             ON ticket.venue_uid=venue.venue_uid and venue.venue_id = {} where venue.venue_id = {} and date(ticket_created_at) = curdate()
-#             GROUP BY venue.venue_uid """.format(id, id), 'get', conn)
-
-#             # print(result)
-#             # queue_size = execute(
-#             #     """ select venue.venue_uid, count(ticket.venue_uid) as queue_size from ticket RIGHT join venue on ticket.venue_uid = venue.venue_uid where venue.venue_id = {} and ticket.status = 'waiting'
-#             #         group by venue.venue_uid """.format(id), 'get', conn)
-#             # queue_size = execute(
-#             #     """ select venue.venue_id, ticket.venue_uid,ticket.status, count(ticket.venue_uid) as queue_size
-#             #         from wip.venue
-#             #         left join wip.ticket
-#             #         on venue.venue_uid = ticket.venue_uid
-#             #         where venue.venue_id = {} and ticket.status = 'waiting' or ticket.status is null and venue.venue_id = {}
-#             #         group by venue.venue_uid,
-#             #         ticket.status """.format(id, id), 'get', conn)
-
-#             queue_size = execute(
-#                 """select venue.venue_id, ticket.venue_uid,ticket.status, venue.queue_cap as queue_size
-#                     from venue
-#                     left join ticket
-#                     on venue.venue_uid = ticket.venue_uid
-#                     where venue.venue_id = {}
-#                     group by venue.venue_uid """.format(id), 'get', conn)
-
-#             if (len(result['result']) == 0):
-#                 result_when_no_ticket = execute(""" select venue.venue_uid, venue.venue_id, venue.street, venue.city, venue.state, venue.zip, venue.latitude, venue.longitude
-#                                                 from venue where venue_id = {} """.format(id), 'get', conn)
-
-#                 for itm in result_when_no_ticket['result']:
-#                     itm['wait_time'] = None
-#                     itm['queue_size'] = 0
-
-#             print(queue_size)
-#             print(len(result['result']))
-            
-#             response = {}
-
-#             for itm2 in queue_size['result']:
-#                 # print(itm2)
-#                 for itm1 in result['result']:
-#                     # print(itm1)
-#                     if itm2['venue_uid'] == itm1['venue_uid'] and itm2['venue_id'] == itm1['venue_id']:
-#                         itm1['queue_size'] = itm2['queue_size']
-            
-#             for itm in result['result']:
-#                 itm.setdefault('queue_size', 0)
-
-#             if(len(result['result']) == 0):
-#                 response["result"] = result_when_no_ticket["result"]
-#             else:
-#                 response["result"] = result["result"]
-
-#             return response, 200
-#         except:
-#             raise BadRequest(
-#                 'All_Users Request failed, please try again later.')
-#         finally:
-#             disconnect(conn)
 class Get_venue(Resource):
     def get(self, id):
         try:
             conn = connect()
+            
+            result = execute("""SELECT venue.venue_uid, venue.venue_id, venue.street, venue.city, venue.state, venue.zip, venue.latitude, venue.longitude,
+            SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time
+            FROM ticket 
+            right JOIN venue 
+            ON ticket.venue_uid=venue.venue_uid and venue.venue_id = {} where venue.venue_id = {} and date(ticket_created_at) = curdate()
+            GROUP BY venue.venue_uid """.format(id, id), 'get', conn)
+            
+            # print(result)
+            # queue_size = execute(
+            #     """ select venue.venue_uid, count(ticket.venue_uid) as queue_size from ticket RIGHT join venue on ticket.venue_uid = venue.venue_uid where venue.venue_id = {} and ticket.status = 'waiting'
+            #         group by venue.venue_uid """.format(id), 'get', conn)
+            # queue_size = execute(
+            #     """ select venue.venue_id, ticket.venue_uid,ticket.status, count(ticket.venue_uid) as queue_size
+            #         from wip.venue
+            #         left join wip.ticket
+            #         on venue.venue_uid = ticket.venue_uid
+            #         where venue.venue_id = {} and ticket.status = 'waiting' or ticket.status is null and venue.venue_id = {}
+            #         group by venue.venue_uid,
+            #         ticket.status """.format(id, id), 'get', conn)
+            
+            queue_size = execute(
+                """select venue.venue_id, ticket.venue_uid,ticket.status, venue.queue_cap as queue_size
+                    from venue
+                    left join ticket
+                    on venue.venue_uid = ticket.venue_uid
+                    where venue.venue_id = {}
+                    group by venue.venue_uid """.format( id), 'get', conn)
 
-            get_venues = execute("""SELECT venue.venue_uid, venue.venue_id, venue.street, venue.city, venue.state, venue.zip, venue.latitude, venue.longitude
-                                from venue where venue_id = {} """.format(id), 'get', conn)
-
-            print(get_venues)
-            for itm in get_venues['result']:
-
-                v_uid = itm['venue_uid']
-                var  = "@wait"
-                opening_at = "@open_time"
-                closing_at = "@close_time"
-                #if the store is currently open or not
-                status = "@openornot"
-
-                get_queue_size  = execute(""" select queue_cap from venue where venue_uid = {} """.format(v_uid), 'get', conn )
-                get_wait_time  = execute(""" call send_approx_wait_time( {}, null , {} ) """.format(v_uid, var), 'get', conn )
-
-                get_business_hours = execute( """ call is_store_open({}, {}, {}, {} ) """.format( v_uid, status, opening_at, closing_at ), 'get', conn )
-                print(get_business_hours)
-                # print(get_queue_size)
-                # print(get_wait_time)
-                itm['queue_size'] = get_queue_size['result'][0]['queue_cap']
-                waitTime = execute(""" select @wait """,'get', conn)
-                open_at = execute( """ select @open_time """, 'get', conn)
-                close_at = execute( """ select @close_time """, 'get', conn)
-                # print(waitTime)
-                itm['wait_time'] = waitTime['result'][0]['@wait']
-
-                itm['open_at'] = open_at['result'][0]['@open_time']           
-                     
-                itm['close_at'] = close_at['result'][0]['@close_time'] 
+            print(queue_size)
             response = {}
 
+            for itm2 in queue_size['result']:
+                # print(itm2)
+                for itm1 in result['result']:
+                    # print(itm1)
+                    if itm2['venue_uid'] == itm1['venue_uid'] and itm2['venue_id'] == itm1['venue_id']:
+                        itm1['queue_size'] = itm2['queue_size']
             
-            response["result"] = get_venues["result"]
+            for itm in result['result']:
+                itm.setdefault('queue_size', 0)
+
+            response["result"] = result["result"]
 
             return response, 200
         except:
@@ -588,89 +527,81 @@ Json response with the updated average time of a particular venue and the status
 """
 
 
-# class Update_queue_info(Resource):
-#     def put(self):
-#         response = {}
-#         try:
-#             _json = request.json
-#             _user_id = _json['user_id']
-#             _uid = _json['venue_uid']
-#             _exit_time = _json['exit_time']
+class Update_queue_info(Resource):
+    def put(self):
+        response = {}
+        try:
+            _json = request.json
+            _user_id = _json['user_id']
+            _uid = _json['venue_uid']
+            _exit_time = _json['exit_time']
 
-#             conn = connect()
-#             # reduced the in-store capacity of that venue
-#             reduce_in_store_cap = """ update venue as a inner join venue as b on a.venue_uid = b.venue_uid
-#                                         set a.in_store_cap = 
-#                                         case when a.in_store_cap = 0 then a.in_store_cap 
-#                                         else 
-#                                         b.in_store_cap-1 
-#                                         end
-#                                         where a.venue_uid = {} """.format( _uid)
+            conn = connect()
+            #reduced the in-store capacity of that venue
+            reduce_in_store_cap = """ update venue as a inner join venue as b on a.venue_uid = b.venue_uid
+                                        set a.in_store_cap = b.in_store_cap-1
+                                        where a.venue_uid = {} """.format( _uid)
+            # set the exit time of the person who just left
+            set_exit_time = """ update ticket set exit_time = '{}', status = 'exit', duration = subtime(exit_time , entry_time)
+                                 where venue_uid = {} and user_id = {} and date(ticket_created_at) = curdate()
+             """.format(
+                _exit_time, _uid, _user_id)
+
+            # assigned the entry tome to the person who was waiting at the head of the queue
+            update_que_head_entry_time = """ update ticket set entry_time = '{}', status = 'in-store'
+                                             where token_number = (select queue_head from venue where venue_uid = {})
+                                             and venue_uid = {} and date(ticket_created_at) = curdate();
+             """.format(
+                 _exit_time, _uid, _uid)
+
+            # increase the instore cap if there's someone standing in the queue
+            incrs_in_store_cap = """ update venue as a inner join venue as b on a.venue_uid = b.venue_uid
+                                     set a.in_store_cap = case when a.queue_cap > 0 then
+                                     b.in_store_cap+1 else b.in_store_cap end where a.venue_uid = {} """.format(_uid)
+
+            # reduced the capacity of the queue
+            # using inner join since we cannot update a column with a value that's coming from the same value
+            reduce_que_cap = """ update venue as a inner join venue as b on a.venue_uid = b.venue_uid
+                                    set a.queue_cap = case when a.queue_cap = 0
+                                    then a.queue_cap else b.queue_cap-1 end
+                                    where a.venue_uid = {} """.format(_uid)
             
-#             # assigned the entry tome to the person who was waiting at the head of the queue
-#             update_que_head_entry_time = """ update ticket set entry_time = '{}', status = 'in-store'
-#                                              where token_number = (select queue_head from venue where venue_uid = {})
-#                                              and venue_uid = {} and date(ticket_created_at) = curdate();
-#              """.format(
-#                  _exit_time, _uid, _uid)
+            # set_exit_status = """ update ticket set status = 'exit' where venue_uid = {} and user_id = {} """.format(
+                # _uid, _user_id)
 
-#             # set the exit time of the person who just left
-#             set_exit_time = """ update ticket set exit_time = '{}', status = 'exit', duration = subtime(exit_time , entry_time)
-#                                  where venue_uid = {} and user_id = {} and date(ticket_created_at) = curdate()
-#              """.format(
-#                 _exit_time, _uid, _user_id)
+            updt_venue_queue_head = """ update venue as a inner join venue as b on a.venue_uid = b.venue_uid
+                                        set a.queue_head = case when a.queue_cap = 0 
+                                        then a.queue_head else a.queue_head+1 end 
+                                        where a.venue_uid= {} """.format( _uid)
 
+            # updt_user_duration = """ update ticket set duration = subtime(exit_time , entry_time) where user_id = {} and venue_uid = {} """.format(_user_id, _uid)
+
+            print(execute(reduce_in_store_cap, 'post', conn))
+            print(execute(set_exit_time, 'post', conn))
+            cursor = conn.cursor()
+            bindData = (_user_id, _uid, _exit_time)
+            cursor.callproc('update_leaving_time', bindData)
+            conn.commit()
+            print(execute(update_que_head_entry_time, 'post', conn))
+            print(execute(reduce_que_cap, 'post', conn))
+            print(execute(incrs_in_store_cap, 'post', conn))            
+            # print(execute(set_exit_status, 'post', conn))            
+            print(execute(updt_venue_queue_head, 'post', conn))
+            # print(execute(updt_user_duration, 'post', conn))
+
+
+
+            wait_time = execute(
+                """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(_uid), 'get', conn)
+            response = {}
+            response["result"] = wait_time["result"]
             
-
-#             # increase the instore cap if there's someone standing in the queue
-#             incrs_in_store_cap = """ update venue as a inner join venue as b on a.venue_uid = b.venue_uid
-#                                      set a.in_store_cap = case when b.queue_cap > 0 then
-#                                      b.in_store_cap+1 else b.in_store_cap end where a.venue_uid = {} """.format(_uid)
-
-#             # reduced the capacity of the queue
-#             # using inner join since we cannot update a column with a value that's coming from the same value
-#             reduce_que_cap = """ update venue as a inner join venue as b on a.venue_uid = b.venue_uid
-#                                     set a.queue_cap = case when a.queue_cap = 0
-#                                     then a.queue_cap else b.queue_cap-1 end
-#                                     where a.venue_uid = {} """.format(_uid)
-            
-#             # set_exit_status = """ update ticket set status = 'exit' where venue_uid = {} and user_id = {} """.format(
-#                 # _uid, _user_id)
-
-#             updt_venue_queue_head = """ update venue as a inner join venue as b on a.venue_uid = b.venue_uid
-#                                         set a.queue_head = case when a.queue_cap = 0 
-#                                         then a.queue_head else a.queue_head+1 end 
-#                                         where a.venue_uid= {} """.format( _uid)
-
-#             # updt_user_duration = """ update ticket set duration = subtime(exit_time , entry_time) where user_id = {} and venue_uid = {} """.format(_user_id, _uid)
-
-#             print(execute(reduce_in_store_cap, 'post', conn))
-#             print(execute(set_exit_time, 'post', conn))
-#             cursor = conn.cursor()
-#             bindData = (_user_id, _uid, _exit_time)
-#             cursor.callproc('update_leaving_time', bindData)
-#             conn.commit()
-            
-#             print(execute(incrs_in_store_cap, 'post', conn))
-#             print(execute(reduce_que_cap, 'post', conn))
-#             print(execute(update_que_head_entry_time, 'post', conn))            
-#             # print(execute(set_exit_status, 'post', conn))            
-#             print(execute(updt_venue_queue_head, 'post', conn))
-#             # print(execute(updt_user_duration, 'post', conn))
-
-
-
-#             wait_time = execute(
-#                 """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(_uid), 'get', conn)
-#             response = {}
-#             response["result"] = wait_time["result"]
-            
-#             return response, 200
-#         except:
-#             raise BadRequest(
-#                 'Queue_update_info Request failed, please try again later.')
-#         finally:
-#             disconnect(conn)
+            return response, 200
+        except:
+            raise BadRequest(
+                'Queue_update_info Request failed, please try again later.')
+        finally:
+            disconnect(conn)
 
 # PUT ENDPOINT AND JSON OBJECT THAT WORKS
 # http://localhost:4000/api/v2/update_queue
@@ -679,34 +610,33 @@ Json response with the updated average time of a particular venue and the status
 # "venue_uid": 2, 
 # "exit_time": "09:05:00"
 
-class Update_queue_info(Resource):
-    def put(self):
-        response = {}
-        try:
-            _json = request.json
-            _user_id = _json['usr_id']
-            _uid = _json['vnu_uid']
-            # _exit_time = _json['ext_time']
+# class Update_queue_info(Resource):
+#     def put(self):
+#         response = {}
+#         try:
+#             _json = request.json
+#             _user_id = _json['user_id']
+#             _uid = _json['venue_uid']
+#             _exit_time = _json['exit_time']
             
-            if request.method == 'PUT':
-                exit_time = getNowTime()
-                bindData = (_user_id, _uid, exit_time)
+#             if request.method == 'POST':
+#                 bindData = (_user_id, _uid, _exit_time)
 
-                conn = connect()
-                cursor = conn.cursor()
+#                 conn = connect()
+#                 cursor = conn.cursor()
 
-                cursor.callproc('update_exit_time', bindData)
-                conn.commit()
-                response["result"] = "Succesfully updated the queue info"
-                return response, 200
-            else:
-                response['message'] = "error adding ticket data"
-                return response, 500
-        except:
-            raise BadRequest(
-                'Update_queue_info Request failed, please try again later.')
-        finally:
-            disconnect(conn)
+#                 cursor.callproc('update_exit_time', bindData)
+#                 conn.commit()
+#                 response["result"] = "Succesfully updated the queue info"
+#                 return response, 200
+#             else:
+#                 response['message'] = "error adding ticket data"
+#                 return response, 500
+#         except:
+#             raise BadRequest(
+#                 'Update_queue_info Request failed, please try again later.')
+#         finally:
+#             disconnect(conn)
 
 
 """Update the entry_time of a particular customer for a particular venue (when a user scans the barcode to enter the venue)
@@ -723,22 +653,17 @@ class Update_entry_time(Resource):
             _json = request.json
             _user_id = _json['user_id']
             _uid = _json['venue_uid']
-            # _entry_time = _json['entry_time']
+            _exit_time = _json['entry_time']
 
             conn = connect()
-            # print(type(_entry_time))
-            entry_time = getNowTime()
-            # print(type(entry_time))
-            
-            query = """ update ticket set entry_time = '{}', status = 'In-store' where venue_uid = {} and user_id = {}
-             and date(ticket_created_at) = utc_date() and `status` <> 'exit' """.format(
-                entry_time, _uid, _user_id)
+            query = """ update ticket set entry_time = '{}' where venue_uid = {} and user_id = {}
+             """.format(
+                _exit_time, _uid, _user_id)
 
-            
 
             result = execute(query, 'post', conn)
-            # execute(""" update ticket set status = 'In-store' where venue_uid = {} and user_id = {} """.format(
-            #     _uid, _user_id), 'post', conn)
+            execute(""" update ticket set status = 'In-store' where venue_uid = {} and user_id = {} """.format(
+                _uid, _user_id), 'post', conn)
 
             wait_time = execute(
                 """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(_uid), 'get', conn)
@@ -773,7 +698,7 @@ class Add_venue(Resource):
         response = {}
         try:
             _json = request.json
-            # _uid = _json['v_venue_uid']
+            _uid = _json['v_venue_uid']
             _name = _json['v_name']
             _id = _json['v_id']
             _category = _json['v_category']
@@ -793,7 +718,7 @@ class Add_venue(Resource):
             _longitude = _json['v_longitude']
             _time_spent = _json['v_default_time_spent']
             if request.method == 'POST':
-                bindData = ( _name, _id, _category, _max_cap,_in_store_cap, _queue_cap,_current_token, _queue_head,
+                bindData = (_uid, _name, _id, _category, _max_cap,_in_store_cap, _queue_cap,_current_token, _queue_head,
                            _business_hours, _email, _street, _city, _state, _zip, _phone, _latitude, _longitude, _time_spent)
                 print(bindData)
                 conn = connect()
