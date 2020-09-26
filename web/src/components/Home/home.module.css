@@ -1,0 +1,53 @@
+.home {
+    margin: 30px 0;
+}
+
+.mainSection {
+    margin: 30px 0;
+}
+
+.businessHoursSection {
+    width: 90%;
+    margin-left: 5%;
+}
+
+.businessHoursButtonSection {
+    display: flex;
+}
+
+.businessHoursButtonItem {
+    flex: 1;
+}
+
+.businessHoursButton {
+    margin: 15px;
+    padding: 15px;
+}
+
+.currentQueue {
+    width: 94%;
+    margin-left: 3%;
+}
+
+.venueInfo {
+    margin-top: 15px;
+    width: 90%;
+    margin-left: 5%;
+}
+
+.venueInfoButton {
+    padding: 15px;
+    min-height: 90px;
+}
+
+.venueInfoEditing {
+    padding: 15px;
+}
+
+.tableHeading {
+    padding: '10px 0 0 15px';
+}
+
+.sectionTitle {
+    color: blue;
+}

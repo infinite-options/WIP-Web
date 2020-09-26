@@ -1,0 +1,32 @@
+.root {
+    width: inherit;
+    height: inherit;
+}
+
+.container1 {
+    display: flex;
+    width: inherit;
+    height: 4rem;
+    align-items: center;
+    justify-content: center;
+    background-color: #2c76c0;
+}
+
+.heading {
+    color: white;
+}
+
+.container2 {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    width: inherit;
+    height: 3rem;
+    background-color: #e9f3fe;
+    color: #9c8c88;
+}
+
+a {
+    color: #9c8c88;
+    text-decoration: none;
+}

@@ -1,0 +1,22 @@
+/* Apply global styles here */
+
+.App {
+    text-align: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.NavBar {
+    width: inherit;
+    height: 7rem;
+}
+
+.Main {
+    width: inherit;
+    height: calc(100vh - 4rem);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+}
