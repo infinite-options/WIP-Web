@@ -1,7 +1,7 @@
 import {
     SELECT_CATEGORY, SELECT_VENUE, NEW_VENUE_NAME, CHANGE_LOCATION,
     CHANGE_PHONE, CHANGE_EMAIL, CHANGE_BUSINESS_HOURS,
-    CHANGE_MAX_CAPACITY, CHANGE_DEFAULT_WAIT_TIME,
+    CHANGE_MAX_CAPACITY, CHANGE_DEFAULT_WAIT_TIME, SUBMIT_NEW_VENUE
 } from './actions/newVenueTypes'
 
 import { noCategory, noVenue, noBusinessHours} from '../constants';
@@ -93,6 +93,9 @@ export default function(state = initialState, action) {
                 ...state,
                 defaultWaitTime: action.payload,
             }
+
+        case SUBMIT_NEW_VENUE:
+            return initialState
 
         default:
             return state
