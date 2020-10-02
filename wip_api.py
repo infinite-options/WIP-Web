@@ -715,7 +715,6 @@ Returns
 Json response with the updated average time of a particular venue and the status code
 """
 
-# currently not using
 class Update_entry_time(Resource):
     def put(self):
         response = {}
@@ -729,16 +728,19 @@ class Update_entry_time(Resource):
             # print(type(_entry_time))
             entry_time = getNowTime()
             # print(type(entry_time))
+            existing_entry_time = execute(""" select entry_time from ticket 
+                                                where user_id = {} and venue_uid = {} and status = 'Entering' and date(ticket_created_at) = utc_date() """.format(
+                                                _user_id, _uid ) ,  'get', conn)
             
+            
+            # if(  existing_entry_time['result'][0]['entry_time'] <= entry_time  ):
+            #     print(entry_time)
+            #     print(existing_entry_time['result'][0]['entry_time'])
             query = """ update ticket set entry_time = '{}', status = 'In-store' where venue_uid = {} and user_id = {}
-             and date(ticket_created_at) = utc_date() and `status` <> 'exit' """.format(
+            and date(ticket_created_at) = utc_date() and `status` <> 'exit' """.format(
                 entry_time, _uid, _user_id)
-
-            
-
             result = execute(query, 'post', conn)
-            # execute(""" update ticket set status = 'In-store' where venue_uid = {} and user_id = {} """.format(
-            #     _uid, _user_id), 'post', conn)
+            
 
             wait_time = execute(
                 """ select SEC_TO_TIME(AVG(TIME_TO_SEC(subtime(exit_time, entry_time)))) as wait_time from ticket where venue_uid={} """.format(_uid), 'get', conn)
@@ -749,6 +751,47 @@ class Update_entry_time(Resource):
         except:
             raise BadRequest(
                 'Queue_update_info Request failed, please try again later.')
+        finally:
+            disconnect(conn)
+
+# PUT ENDPOINT AND JSON OBJECT THAT WORKS
+# http://localhost:4000/api/v2/entry_time_button
+# https://61vdohhos4.execute-api.us-west-1.amazonaws.com/dev/api/v2/entry_time_button
+# "user_id": 1,
+# "venue_uid": 2, 
+# "entry_time": "09:05:00"
+
+"""Update the entry_time and of a particular customer for a particular venue (when a user presses get out of line button for a particular venue)
+Returns
+-------
+Json response with the updated average time of a particular venue and the status code
+"""
+
+class get_out(Resource):
+    def put(self):
+        response = {}
+        try:
+            _json = request.json
+            _user_id = _json['usr_id']
+            _uid = _json['vnu_uid']
+            # _entry_time = _json['entry_time']
+
+            if request.method == 'PUT':
+                bindData = (_user_id, _uid)
+
+                conn = connect()
+                cursor = conn.cursor()
+
+                cursor.callproc('get_out_of_line', bindData)
+                conn.commit()
+                response["result"] = "Succesfully executed get out of the line"
+                return response, 200
+            else:
+                response['message'] = "error executing get out of the line"
+                return response, 500
+        except:
+            raise BadRequest(
+                'get_out Request failed, please try again later.')
         finally:
             disconnect(conn)
 
@@ -794,7 +837,7 @@ class Add_venue(Resource):
             _time_spent = _json['v_default_time_spent']
             if request.method == 'POST':
                 bindData = ( _name, _id, _category, _max_cap,_in_store_cap, _queue_cap,_current_token, _queue_head,
-                           _business_hours, _email, _street, _city, _state, _zip, _phone, _latitude, _longitude, _time_spent)
+                           _business_hours, _street, _city, _state, _zip, _phone, _email, _latitude, _longitude, _time_spent)
                 print(bindData)
                 conn = connect()
                 cursor = conn.cursor()
@@ -1038,7 +1081,7 @@ class Get_customer_token(Resource):
         try:
             conn = connect()
             result = execute("""
-                select token_number from ticket where user_id = {} and venue_uid = {} and status = 'waiting' and date(ticket_created_at) = curdate()
+                select token_number from ticket where user_id = {} and venue_uid = {} and `status` <> 'exit' and date(ticket_created_at) = utc_date()
              """.format(user_id, venue_uid), 'get', conn)
             response = {}
             response["result"] = result["result"]
@@ -1261,7 +1304,8 @@ api.add_resource(Add_ticket, '/api/v2/add_ticket')
 api.add_resource(Delete_ticket, '/api/v2/delete_ticket/<int:id>')
 api.add_resource(Queue_info, '/api/v2/queue/<int:id>')
 api.add_resource(Update_queue_info, '/api/v2/update_queue') #to EXIT the store 
-api.add_resource(Update_entry_time, '/api/v2/entry_time_button')
+api.add_resource(Update_entry_time, '/api/v2/entry_time_button') # to ENTER the store
+api.add_resource(get_out, '/api/v2/get_out') # to get out of the line
 api.add_resource(
     Get_user_id, '/api/v2/get_customer_id/<string:phone>')
 api.add_resource(Update_customer_coordinates, '/api/v2/update_customer_coords')
