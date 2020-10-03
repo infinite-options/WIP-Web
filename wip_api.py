@@ -1208,7 +1208,11 @@ class Get_venue_info_admin(Resource):
         try:
             conn = connect()
             
-            result = execute("""SELECT ticket.token_number, ticket.entry_time, customer.name, customer.customer_id, ticket.ticket_created_at, ticket.status, customer.phone as customer_number
+            result = execute("""SELECT ticket.token_number, 
+            time(convert_tz(  concat( date(ticket.ticket_created_at), ' ', ticket.entry_time), '+00:00','-07:00'  )) as entry_time ,
+            customer.name, customer.customer_id,
+            convert_tz (ticket.ticket_created_at, '+00:00','-07:00' ) as ticket_created_at ,
+            ticket.status, customer.phone as customer_number
             FROM ticket 
 			JOIN customer 
             ON ticket.user_id = customer.customer_id and ticket.venue_uid = {} """.format(id), 'get', conn)
