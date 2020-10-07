@@ -1,84 +1,93 @@
 .home {
-  margin: 30px 0;
+    margin: 30px 0;
 }
 
 .mainSection {
-  margin: 30px 0;
+    margin: 30px 0;
 }
 
 .businessHoursSection {
-  width: 90%;
-  padding-left: 2rem;
+    width: 90%;
+    padding-left: 2rem;
 }
 
 .businessHoursButtonSection {
-  display: flex;
+    display: flex;
 }
 
 .businessHoursButtonItem {
-  flex: 1;
+    flex: 1;
 }
 
 .businessHoursButton {
-  margin: 15px;
-  padding: 15px;
+    margin: 15px;
+    padding: 15px;
 }
 
 .currentQueue {
-  width: 94%;
-  margin-left: 3%;
+    width: 94%;
+    margin-left: 3%;
 }
 
 .venueInfo {
-  margin-top: 15px;
-  width: 90%;
-  margin-left: 5%;
+    margin-top: 15px;
+    width: 90%;
+    margin-left: 5%;
 }
 
 .venueInfoButton {
-  padding: 15px;
-  min-height: 90px;
+    padding: 15px;
+    min-height: 90px;
 }
 
 .venueInfoEditing {
-  padding: 15px;
+    padding: 15px;
 }
 
 .tableHeading {
-  padding: "10px 0 0 15px";
+    padding: "10px 0 0 15px";
 }
 
 .sectionTitle {
-  color: blue;
+    color: blue;
 }
 
 .leftPanel {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .venue {
-  display: flex;
-  flex-direction: row;
-  padding: 1.5rem;
-  flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    padding: 1.5rem;
+    flex-wrap: wrap;
 }
+
 .queueBlock {
-  margin-top: 6rem;
+    margin-top: 6rem;
+}
+
+.cell {
+    border: 1px solid #efefef;
+    padding: 1px;
+    text-align: left;
 }
 
 @media screen and (max-width: 700px) {
-  .leftPanel {
-    align-items: center;
-  }
-  .venue {
-    align-items: center;
-    width: 100%;
-    flex-wrap: wrap;
-    padding: 0.5rem;
-  }
-  .businessHoursSection {
-    padding-left: 0;
-    margin-bottom: 0.5rem;
-  }
+    .leftPanel {
+        align-items: center;
+    }
+
+    .venue {
+        align-items: center;
+        width: 100%;
+        flex-wrap: wrap;
+        padding: 0.5rem;
+    }
+
+    .businessHoursSection {
+        padding-left: 0;
+        margin-bottom: 0.5rem;
+    }
 }

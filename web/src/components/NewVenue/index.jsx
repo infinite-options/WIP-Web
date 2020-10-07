@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { selectNewCategory, selectNewVenue, createNewVenue, changeAddress,
     changePhone, changeEmail, changeBusinessHours, changeMaxCapacity, changeDefaultWaitTime,
     submitVenue,
@@ -10,9 +9,8 @@ import { noCategory, noVenue, needVenue } from '../../constants';
 
 import { Button, Grid, InputAdornment, MenuItem, Paper, Select, TextField, Typography } from "@material-ui/core";
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/core";
-
+import {Form, Row} from 'react-bootstrap';
 import styles from './newVenue.module.css';
-
 class NewVenue extends React.Component {
 
     getCategories = () => {
@@ -292,23 +290,26 @@ class NewVenue extends React.Component {
         let categories = this.getCategories();
         let venues = this.getVenues();
         return (
-            <div className={styles.root}>
-                <Grid container>
-                    <Grid item xs={12}>
-                        <Typography variant="h4"> New Venue </Typography>
+            <div className = {styles.leftside}>
+                <Grid container
+                    direction="column"
+                    justify="flex-start"
+                    alignItems="flex-start"
+                >
+                    <Grid item className={styles.entry2}>
+                        <Typography variant="h6"> NEW VENUE </Typography>
                     </Grid>
-                    <Grid item xs={12} className={styles.entry}>
-                        <Typography variant="h6"> Name </Typography>
+                    <Grid item xs={12} md={6} sm={3} className={styles.entry1}>
+                        <Typography variant="body1"> Category </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6} className={styles.entry}>
-                        <Typography variant="body1"> Category: &nbsp; </Typography>
-                        <Select
-                                value={this.props.category}
+
+                    <Grid item className={styles.entry1}>
+                        <Select value={this.props.category}
                                 onChange={(event) => {  
                                     this.props.selectNewCategory(event.target.value);
                                 }}
                             >
-                                <MenuItem value={noCategory}> Select a Category </MenuItem>
+                                <MenuItem value= {noCategory} > Select a Category </MenuItem>
                                 {
                                     categories.map(category => (
                                         <MenuItem value={category} key={category}> {category} </MenuItem>
@@ -316,8 +317,11 @@ class NewVenue extends React.Component {
                                 }
                         </Select>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4} className={styles.entry}>
-                                <Typography variant="body1"> Name:&nbsp;</Typography>
+    
+                    <Grid item className={styles.entry1}>
+                        <Typography variant="body1"> Name Of Store </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={6} sm={3}className={styles.entry1}>
                                 <Select
                                     disabled={this.props.category === noCategory}
                                     value={this.props.selectedVenueName}
@@ -333,141 +337,171 @@ class NewVenue extends React.Component {
                                     }
                                     <MenuItem value={needVenue}> Venue not in list </MenuItem>
                                 </Select>
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                <TextField
-                                    disabled={this.props.category === noCategory || this.props.selectedVenueName !== needVenue}
-                                    value={this.props.newVenueName}
-                                    onChange={(event) => {
-                                        this.props.createNewVenue(event.target.value);
+                    </Grid>
+                    <Grid item className ={styles.form}>
+                    <Form>
+                        <Form.Group controlId="formGridEmail">
+                            <Form.Row>
+                                <Form.Label >Email</Form.Label>
+                            </Form.Row>
+                            <Form.Row>
+                                <Form.Control 
+                                className = {styles.formControl}
+                                type="email"
+                                placeholder="xxxxx.xxxx@safeway.com"
+                                value={this.props.email}
+                                onChange={(e) => {
+                                    this.props.changeEmail(e.target.value);
+                                }} />
+                            </Form.Row>
+                        </Form.Group>
+                        
+                        <Form.Group controlId="formGridPhoneNumber">
+                            <Form.Row>
+                                <Form.Label>Phone Number</Form.Label>
+                            </Form.Row>
+                            <Form.Row>    
+                                <Form.Control className = {styles.formControl} 
+                                type="phone number" placeholder="0000000000"
+                                value={this.props.phone}
+                                onChange={(e) => {
+                                this.props.changePhone(e.target.value)}}
+                                />
+                            </Form.Row>
+                        </Form.Group>
+                    </Form>
+                    </Grid>
+
+                    <Grid item className ={styles.form}>
+                        <Form.Group>
+                            <Form.Row>
+                            <Form.Label>Address</Form.Label>
+                            </Form.Row>
+                            <Form.Row>
+                                <Form.Control className = {styles.formControl}
+                                    placeholder="Apartment, studio, or floor" 
+                                    value={this.props.address['address']}
+                                    onChange={(e) => {
+                                    this.props.changeAddress(this.props.address, 'address', e.target.value);
                                     }}
                                 />
+                            </Form.Row>
+                        </Form.Group>
+                        <Grid container direction="row" >
+                            <Grid item className={styles.formControlGridSpacing} >
+                               <Form.Control  placeholder="City" className = {styles.formControlAddress}
+                                    value={this.props.address['city']}
+                                    onChange={(e) => {
+                                    this.props.changeAddress(this.props.address, 'city', e.target.value);
+                                    }}    
+                               />
+                            </Grid>
+                            <Grid item className={styles.formControlGridSpacing}>
+                                <Form.Control placeholder="State" className = {styles.formControlAddress}
+                                    value={this.props.address['state']}
+                                    onChange={(e) => {
+                                    this.props.changeAddress(this.props.address, 'state', e.target.value);
+                                    }} 
+                                />
+                            </Grid>
+                            <Grid item className={styles.formControlGridSpacing}>
+                                <Form.Control placeholder="Zip" className = {styles.formControlAddress}
+                                    value={this.props.address['zip']}
+                                    onChange={(e) => {
+                                    this.props.changeAddress(this.props.address, 'zip', e.target.value);
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="h6"> Location </Typography>
+                    <Grid container direction="row" >
+                     <Grid item className ={styles.form}>
+                        <Form.Group>
+                            <Form.Row>
+                            <Form.Label>Max Capacity</Form.Label>
+                            </Form.Row>
+                            <Form.Row>
+                                <Form.Control className = {styles.formControlAddress}
+                                    placeholder="42" 
+                                    type='number'
+                                    InputProps={{
+                                        inputProps: {   
+                                            min: 0,
+                                        }
+                                    }}
+                                    value={this.props.maxCapacity}
+                                    onChange={(e) => {
+                                        this.props.changeMaxCapacity(e.target.value);
+                                    }}
+                                />
+                            </Form.Row>
+                        </Form.Group>
                     </Grid>
-                    <Grid item xs={12} sm={6} className={styles.entry}>
-                        <Typography variant="body1"> Address:&nbsp;</Typography>
-                        <TextField
-                            value={this.props.address['address']}
-                            onChange={(e) => {
-                                this.props.changeAddress(this.props.address, 'address', e.target.value);
-                            }}
-                        />
+                    <Grid item className ={styles.form}>
+                        <Form.Group>
+                            <Form.Row>
+                            <Form.Label>Default Wait Time</Form.Label>
+                            </Form.Row>
+                            <Grid container direction="row" >
+                                <Grid item className={styles.formControlGridSpacing} >
+                                <Form.Control className = {styles.formControlAddress}
+                                   placeholder="Hr"
+                                   type='number'
+                                   InputProps={{
+       
+                                      // endAdornment: <InputAdornment position='end'>Hours</InputAdornment>,
+                                       inputProps: { 
+                                           max: 23, min: 0 
+                                       }
+                                   }}
+                                   value={this.props.defaultWaitTime.hr}
+                                   onChange={(e) => {
+                                       this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'hr',e.target.value);
+                                   }}
+                                />
+                                </Grid>
+                                <Grid item className={styles.formControlGridSpacing} >
+                                <Form.Control className = {styles.formControlAddress}
+                                   placeholder="Min"
+                                   type='number'
+                                   InputProps={{
+                                       //endAdornment: <InputAdornment position='end'>Minutes</InputAdornment>,
+                                       inputProps: { 
+                                           max: 59, min: 0 
+                                       }
+                                   }}
+                                   value={this.props.defaultWaitTime.min}
+                                   onChange={(e) => {
+                                       this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'min',e.target.value);
+                                   }}
+                                />
+
+                                </Grid>
+                            </Grid>
+                            
+                        </Form.Group>
                     </Grid>
-                    <Grid item xs={12} sm={6} className={styles.entry}>
-                        <Typography variant="body1"> City:&nbsp;</Typography>
-                        <TextField
-                            value={this.props.address['city']}
-                            onChange={(e) => {
-                                this.props.changeAddress(this.props.address, 'city', e.target.value);
-                            }}
-                        />
                     </Grid>
-                    <Grid item xs={12} sm={6} className={styles.entry}>
-                        <Typography variant="body1"> State:&nbsp;</Typography>
-                        <TextField
-                            value={this.props.address['state']}
-                            onChange={(e) => {
-                                this.props.changeAddress(this.props.address, 'state', e.target.value);
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}   className={styles.entry}>
-                        <Typography variant="body1"> Zip:&nbsp;</Typography>
-                        <TextField
-                            value={this.props.address['zip']}
-                            onChange={(e) => {
-                                this.props.changeAddress(this.props.address, 'zip', e.target.value);
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="h6"> Contact </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6} className={styles.entry}>
-                        <Typography variant="body1"> Phone:&nbsp;</Typography>
-                        <TextField
-                            value={this.props.phone}
-                            onChange={(e) => {
-                                this.props.changePhone(e.target.value);
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}   className={styles.entry}>
-                        <Typography variant="body1"> Email:&nbsp;</Typography>
-                        <TextField
-                            value={this.props.email}
-                            onChange={(e) => {
-                                this.props.changeEmail(e.target.value);
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} className={styles.entryTable}>
-                        <Typography variant="h6"> Business Hours </Typography>
+                </Grid>
+
+                    <Grid item className={styles.entryTable}>
+                        <Typography variant="h6"> BUSINESS HOURS </Typography>
                         {this.businessHours()}
                     </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="h6"> Miscellaneous Information </Typography>
-                    </Grid>
-                    <Grid item xs={12} md={4}   className={styles.entry}>
-                        <Typography variant="body1"> Max Capacity:&nbsp;</Typography>
-                        <TextField
-                            type='number'
-                            InputProps={{
-                                inputProps: {   
-                                    min: 0,
-                                }
-                            }}
-                            value={this.props.maxCapacity}
-                            onChange={(e) => {
-                                this.props.changeMaxCapacity(e.target.value);
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={8}   className={styles.entry}>
-                        <Typography variant="body1"> Default Time Spent:&nbsp;</Typography>
-                        <TextField
-                            type='number'
-                            InputProps={{
-                                endAdornment: <InputAdornment position='end'>Hours</InputAdornment>,
-                                inputProps: { 
-                                    max: 23, min: 0 
-                                }
-                            }}
-                            value={this.props.defaultWaitTime.hr}
-                            onChange={(e) => {
-                                this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'hr',e.target.value);
-                            }}
-                        />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <TextField
-                            type='number'
-                            InputProps={{
-                                endAdornment: <InputAdornment position='end'>Minutes</InputAdornment>,
-                                inputProps: { 
-                                    max: 59, min: 0 
-                                }
-                            }}
-                            value={this.props.defaultWaitTime.min}
-                            onChange={(e) => {
-                                this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'min',e.target.value);
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}   className={styles.entry}>
+                    <Grid item xs={12} sm={6} md={4}  className={styles.entry1}>
                         <Button
                             variant="contained"
                             color="primary"
+                            position=""
                             onClick={() => {
                                 this.props.submitVenue(this.props.venues, this.props.category, this.props.selectedVenueName,
                                     this.props.newVenueName, this.props.address, this.props.phone, this.props.email,
                                     this.props.businessHours, this.props.maxCapacity, this.props.defaultWaitTime);
                             }}
                         >
-                            Submit
+                            Add Venue
                         </Button>
                     </Grid>
-                </Grid>
             </div>
         )
     }
