@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\components",
+    "\\src\\components\\Home",
+    "\\src\\components\\NavBar",
+    "\\src\\components\\NewVenue"
+  ],
+  "SelectedNode": "\\src\\components\\NewVenue\\newVenue.module.css",
+  "PreviewInSolutionExplorer": false
+}

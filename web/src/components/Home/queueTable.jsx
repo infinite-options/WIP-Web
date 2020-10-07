@@ -16,12 +16,20 @@ class QueueTable extends React.Component {
         return (
         <div className={styles.currentQueue}>
             <MaterialTable
+            options={{
+                paging:true,
+                pageSize:7,       // make initial page size
+                emptyRowsWhenPaging: true,   //to make page size fix in case of less data rows
+                pageSizeOptions:[7,14,21],    // rows selection options
+            }}
                 title="Current Queue Table"
-                columns={[
+                columns={
+                    [
                     { title:'Token Number', field: 'token_number' },
                     { title:'Name', field: 'name'},
                     { title: 'Created at', field: 'ticket_created_at'},
                     {   title: 'Status',
+                        align: 'center',
                         field: 'status',
                         render: row => {
                             switch(row.status) {
@@ -34,13 +42,17 @@ class QueueTable extends React.Component {
                             }
                         }
                     },
-                    { title: 'Customer Phone Number', field: 'customer_number'}
+                    {title: 'Commute Time', field: 'commute_time'},
+                    {   title: 'Customer Phone Number', 
+                        field: 'customer_number',
+                        width:'12.5rem'}
+                   
                 ]}
                 data={this.props.queueData}
                 components={{
                     Toolbar: props => (
                         <div style={{
-                            padding: '10px 0 0 15px'
+                            padding: '10px 0 0 10px'
                         }}>
                             <Typography variant="h4" className={styles.sectionTitle}>
                                 {props.title}
@@ -48,8 +60,8 @@ class QueueTable extends React.Component {
                         </div>
                     ),
                     Header: props => (
-                        <TableHead>
-                            <TableRow>
+                        <TableHead item className={styles.cell}>
+                            <TableRow> 
                                 <TableCell> {props.columns[0].title} </TableCell>
                                 <TableCell> {props.columns[1].title} </TableCell>
                                 <TableCell> {props.columns[2].title} </TableCell>
@@ -67,6 +79,7 @@ class QueueTable extends React.Component {
                                     </Select>
                                 </TableCell>
                                 <TableCell> {props.columns[4].title} </TableCell>
+                                <TableCell> {props.columns[5].title} </TableCell>
                             </TableRow>
                         </TableHead>
                     )
@@ -92,4 +105,4 @@ const mapStateToProps = state => ({
     queueData: state.venueData.filteredQueue,
 })
 
-export default connect(mapStateToProps, { selectFilterQueue })(QueueTable);
+export default connect(mapStateToProps, { selectFilterQueue })(QueueTable); 
