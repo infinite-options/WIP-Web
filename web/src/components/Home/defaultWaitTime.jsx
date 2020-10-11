@@ -71,6 +71,7 @@ class DefaultWaitTime extends React.Component {
               <Button
                 variant='contained'
                 color='primary'
+                className = {styles.capacityButton}
                 onClick={() =>
                   this.props.submitDefaultWaitTime(
                     this.props.venue_uid,
@@ -86,6 +87,7 @@ class DefaultWaitTime extends React.Component {
               <Button
                 variant='contained'
                 color='primary'
+                className = {styles.capacityButton}
                 onClick={() => this.props.editDefaultWaitTimeStatus(false)}
               >
                 Cancel
@@ -119,11 +121,16 @@ class DefaultWaitTime extends React.Component {
             {" "}
             Default Wait Time{" "}
           </Typography>
-          <Typography variant='body1'>
-            {" "}
-            {this.props.defaultWaitTime}{" "}
-          </Typography>
-          {this.editDefaultWaitTimeStatus()}
+          
+          <Typography variant='body1' container direction="column">
+          <Grid container direction="row" className = {styles.waitButton}
+           > 
+            
+            {this.props.defaultWaitTime}
+            {this.editDefaultWaitTimeStatus()}
+            </Grid>
+            </Typography>
+            
         </Paper>
       </div>
     );

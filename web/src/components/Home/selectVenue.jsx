@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import { selectCategory, selectVenue, selectLocation } from '../../reducers/actions/venueActions';
 import { noCategory, noLocation, noVenue } from '../../constants';
 
-import { Grid, MenuItem, Select } from "@material-ui/core";
+import { Grid, MenuItem, Select, Box, StylesProvider } from "@material-ui/core";
 
+import styles from "./home.module.css";
 class SelectVenue extends React.Component{
 
     getCategories = () => {
@@ -44,24 +45,29 @@ class SelectVenue extends React.Component{
         let venues = this.getVenues();
         let locations = this.getLocations();
         return (
-            <Grid container>
-                <Grid item xs={12} md={2}>
+            <Grid container className = {styles.venueLocation}>
+                <Grid item xs={12} md={6}>
                     <Select
+                        style={{ width: '10rem',
+                        textAlign: 'left'}}
                         value={this.props.category}
                         onChange={(event) => {  
                             this.props.selectCategory(event.target.value);
                         }}
                     >
-                        <MenuItem value={noCategory}> Select a Category </MenuItem>
+                        <MenuItem value={noCategory} > Select a Category </MenuItem>
                         {
                             categories.map(category => (
-                                <MenuItem value={category} key={category}> {category} </MenuItem>
+                                <MenuItem
+                                 value={category} key={category}> {category} </MenuItem>
                             ))
                         }
                     </Select>
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={12} md={6}>
                     <Select
+                        style={{ width: '10rem',
+                        textAlign: 'left'}}
                         disabled={this.props.category === noCategory}
                         value={this.props.venue}
                         onChange={(event) => {
@@ -77,8 +83,11 @@ class SelectVenue extends React.Component{
                         }
                     </Select>
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <br/><br/>
+                <Grid item xs={12} md={12}>
                     <Select
+                        style={{ width: '25rem',
+                        textAlign: 'left'}}
                         disabled={this.props.category === noCategory || this.props.venue === noVenue}
                         value={this.props.location}
                         onChange={(event) => {
@@ -86,6 +95,7 @@ class SelectVenue extends React.Component{
                             this.props.selectLocation(event.target.value);
                         }}
                     >
+                        
                         <MenuItem value={noLocation}> Select a Location </MenuItem>
                         {
                             locations.map(venue => (

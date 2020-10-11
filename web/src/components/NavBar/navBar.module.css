@@ -31,3 +31,13 @@ a {
     color: #9c8c88;
     text-decoration: none;
 }
+
+
+.modalClass{
+    top                   : 100px;
+    left                  : '50%';
+    right                 : 'auto';
+    bottom                : 'auto';
+    margin-right           : '-50%';
+    transform             : 'translate(-50%, -50%)';
+}

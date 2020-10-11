@@ -1,14 +1,16 @@
 .home {
-    margin: 30px 0;
+    margin: 0% 0;
+    background-color:#e9f3fe ;
 }
 
 .mainSection {
-    margin: 30px 0;
+    margin: 0.8% 0;
 }
 
 .businessHoursSection {
     width: 90%;
     padding-left: 2rem;
+    flex-direction: row;
 }
 
 .businessHoursButtonSection {
@@ -20,74 +22,140 @@
 }
 
 .businessHoursButton {
-    margin: 15px;
-    padding: 15px;
+    margin: 2px;
+    padding-bottom: 1px;
+    flex-direction: row;
+    margin-top: -2rem;
+    margin-left:10rem;
+}
+
+.businessHoursButtonBottom{
+    margin: 2px;
+    padding-bottom: 1px;
+    flex-direction: row;
+    margin-top: 1rem;
+    margin-left:10rem;
 }
 
 .currentQueue {
-    width: 94%;
+    width: 90%;
     margin-left: 3%;
+    border: 1px solid gray;
 }
 
 .venueInfo {
-    margin-top: 15px;
-    width: 90%;
-    margin-left: 5%;
+    width: 12rem;
+    border: 1px solid gray;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 .venueInfoButton {
-    padding: 15px;
-    min-height: 90px;
+    min-height: 5rem;
+    width: 12rem;
 }
 
 .venueInfoEditing {
-    padding: 15px;
+    padding: 8px;
+    display: inline-block;
+    margin-top: -0.8rem;
+    margin-right: 1rem;
+}
+
+.venueInfoEditing1 {
+    padding-right: 25px;
+    display: inline-block;
+    /* margin-top: -0.8rem; */
+    /* margin-right: 1rem; */
 }
 
 .tableHeading {
     padding: "10px 0 0 15px";
 }
 
-.sectionTitle {
-    color: blue;
+.h6.sectionTitle {
+    color: black;
+    font-weight: 100;
+
+}
+.businessTitle{
+    color: black;
+    text-align: left;
+    flex-direction: row;
+    
 }
 
 .leftPanel {
     display: flex;
     flex-direction: column;
+    border-right : 1px solid gray;
+    border-top : 1px solid gray;
+    width : 12.5rem;
+    padding-right: 2rem;
 }
 
 .venue {
     display: flex;
-    flex-direction: row;
-    padding: 1.5rem;
+    padding: 1rem;
     flex-wrap: wrap;
 }
 
+.waitButton{
+    margin-left: 2rem;
+    flex-direction: row;
+    display: flex;
+    position: relative;
+}
+
+.capacityField{
+    width : 3rem;
+}
+
+.capacityButton{
+    margin: -10rem;
+}
 .queueBlock {
-    margin-top: 6rem;
+    margin-top: 10rem;
+    padding-top: 4rem;
 }
 
 .cell {
     border: 1px solid #efefef;
     padding: 1px;
-    text-align: left;
+    text-align: center;
+}
+.venueLocation{
+    padding-top: 2%;
+}
+
+.businessTableColor {
+    background-color: #e9f3fe;
+    text-align: center;
 }
 
 @media screen and (max-width: 700px) {
     .leftPanel {
-        align-items: center;
+        align-items : right;
+        background-color: black;
+        border: 1px solid black;
+        height: 100%;
+        width: 12.5rem;
+        padding: 2rem;
     }
 
     .venue {
         align-items: center;
-        width: 100%;
         flex-wrap: wrap;
         padding: 0.5rem;
+        max-height: 10rem;
+        min-height: 4rem;
+        height : 10rem;
     }
 
     .businessHoursSection {
         padding-left: 0;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
+        margin-left: 1rem;
     }
 }

@@ -40,9 +40,13 @@ class NewVenue extends React.Component {
         let businessHours = JSON.parse(JSON.stringify(this.props.businessHours));
         return (
             <TableContainer component={Paper}>
-                <Table>
+                <Table
+                    style={{
+                        height: '0.5rem'
+                        }} 
+                    className= {styles.businessTableColor}>
                     <TableHead>
-                        <TableRow>
+                        <TableRow >
                             <TableCell> Day </TableCell>
                             <TableCell> Open </TableCell>
                             <TableCell> Close </TableCell>
@@ -305,9 +309,11 @@ class NewVenue extends React.Component {
 
                     <Grid item className={styles.entry1}>
                         <Select value={this.props.category}
-                                onChange={(event) => {  
-                                    this.props.selectNewCategory(event.target.value);
-                                }}
+                            style={{ width: '10rem',
+                            textAlign: 'left'}}
+                            onChange={(event) => {  
+                                this.props.selectNewCategory(event.target.value);
+                            }}
                             >
                                 <MenuItem value= {noCategory} > Select a Category </MenuItem>
                                 {
@@ -322,21 +328,23 @@ class NewVenue extends React.Component {
                         <Typography variant="body1"> Name Of Store </Typography>
                     </Grid>
                     <Grid item xs={12} md={6} sm={3}className={styles.entry1}>
-                                <Select
-                                    disabled={this.props.category === noCategory}
-                                    value={this.props.selectedVenueName}
-                                    onChange={(event) => {
-                                        this.props.selectNewVenue(event.target.value);
-                                    }}
-                                >
-                                    <MenuItem value={noVenue}> Select a Venue </MenuItem>
-                                    {
-                                        venues.map(venue => (
-                                            <MenuItem value={venue} key={venue}> {venue} </MenuItem>
-                                        ))
-                                    }
-                                    <MenuItem value={needVenue}> Venue not in list </MenuItem>
-                                </Select>
+                        <Select
+                            style={{ width: '10rem',
+                            textAlign: 'left'}}
+                            disabled={this.props.category === noCategory}
+                            value={this.props.selectedVenueName}
+                            onChange={(event) => {
+                                this.props.selectNewVenue(event.target.value);
+                            }}
+                        >
+                            <MenuItem value={noVenue}> Select a Venue </MenuItem>
+                            {
+                                venues.map(venue => (
+                                    <MenuItem value={venue} key={venue}> {venue} </MenuItem>
+                                ))
+                            }
+                            <MenuItem value={needVenue}> Venue not in list </MenuItem>
+                        </Select>
                     </Grid>
                     <Grid item className ={styles.form}>
                     <Form>
