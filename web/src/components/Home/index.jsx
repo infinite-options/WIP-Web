@@ -15,10 +15,10 @@ import styles from "./home.module.css";
 function Home() {
   return (
     <div className={styles.home}>
-      <SelectVenue />
       <Grid container className={styles.mainSection}>
         <Grid className={styles.leftPanel} item xs={12} md={4}>
-          <Grid className={styles.venue} item xs={10} md={12}>
+        <SelectVenue />
+          <Grid className={styles.venue} item xs={12} md={12}>
             <Grid item xs={6} md={6}>
               <InVenue />
             </Grid>

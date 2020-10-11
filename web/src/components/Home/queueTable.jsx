@@ -9,6 +9,7 @@ import { Typography, TableHead, TableRow, TableCell, Select, MenuItem } from "@m
 import MaterialTable from "material-table";
 
 import styles from './home.module.css';
+import { blue } from '@material-ui/core/colors';
 
 class QueueTable extends React.Component {
 
@@ -16,6 +17,9 @@ class QueueTable extends React.Component {
         return (
         <div className={styles.currentQueue}>
             <MaterialTable
+            style = {{
+                backgroundColor: '#e9f3fe'
+            }}
             options={{
                 paging:true,
                 pageSize:7,       // make initial page size
@@ -25,7 +29,7 @@ class QueueTable extends React.Component {
                 title="Current Queue Table"
                 columns={
                     [
-                    { title:'Token Number', field: 'token_number' },
+                    { title:'Token #', field: 'token_number',width:'6rem' },
                     { title:'Name', field: 'name'},
                     { title: 'Created at', field: 'ticket_created_at'},
                     {   title: 'Status',
@@ -43,13 +47,11 @@ class QueueTable extends React.Component {
                         }
                     },
                     {title: 'Commute Time', field: 'commute_time'},
-                    {   title: 'Customer Phone Number', 
-                        field: 'customer_number',
-                        width:'12.5rem'}
-                   
+                    {title: 'Customer Phone #', field: 'customer_number', width:'12.5rem'}
                 ]}
                 data={this.props.queueData}
                 components={{
+                    
                     Toolbar: props => (
                         <div style={{
                             padding: '10px 0 0 10px'
@@ -61,7 +63,7 @@ class QueueTable extends React.Component {
                     ),
                     Header: props => (
                         <TableHead item className={styles.cell}>
-                            <TableRow> 
+                            <TableRow >
                                 <TableCell> {props.columns[0].title} </TableCell>
                                 <TableCell> {props.columns[1].title} </TableCell>
                                 <TableCell> {props.columns[2].title} </TableCell>

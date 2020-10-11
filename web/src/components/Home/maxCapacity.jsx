@@ -17,38 +17,45 @@ class MaxCapacity extends React.Component {
     if (!isNaN(this.props.maxCapacity)) {
       if (this.props.editingMaxCapacity) {
         return (
-          <Grid container>
-            <Grid item xs={12} className={styles.venueInfoEditing}>
-              <TextField
+          <Grid container direction="column" justify="flex-start" alignItems="flex-start" >
+            <Grid item >
+              <TextField 
                 type='number'
                 value={this.props.newMaxCapacity}
+                className = {styles.capacityField}
                 onChange={(e) => {
                   this.props.editMaxCapacity(e.target.value);
                 }}
               />
             </Grid>
-            <Grid item xs={12} md={6} className={styles.venueInfoEditing}>
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={() => {
-                  this.props.submitMaxCapacity(
-                    this.props.venue_uid,
-                    this.props.newMaxCapacity
-                  );
-                }}
-              >
-                Save
-              </Button>
-            </Grid>
-            <Grid item xs={12} md={6} className={styles.venueInfoEditing}>
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={() => this.props.editMaxCapacityStatus(false)}
-              >
-                Cancel
-              </Button>
+            <Grid item>
+              <Grid container direction="row" justify="flex-start" alignItems="flex-start">
+                <Grid item className={styles.venueInfoEditing1}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    // className = {styles.capacityButton}
+                    onClick={() => {
+                      this.props.submitMaxCapacity(
+                        this.props.venue_uid,
+                        this.props.newMaxCapacity
+                      );
+                    }}
+                  >
+                    Save
+                  </Button>
+                </Grid>
+                <Grid item className={styles.venueInfoEditing1}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    // className = {styles.capacityButton}
+                    onClick={() => this.props.editMaxCapacityStatus(false)}
+                  >
+                    Cancel
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         );
@@ -78,11 +85,13 @@ class MaxCapacity extends React.Component {
             {" "}
             Max Capacity{" "}
           </Typography>
-          <Typography variant='body1'>
-            {" "}
+          <Typography variant='body1' direction = "column">
+          <Grid container direction="row" className = {styles.waitButton}> 
+            {/* {" "} */}
             {isNaN(this.props.maxCapacity) ? "" : this.props.maxCapacity}{" "}
-          </Typography>
           {this.editMaxCapacity()}
+          </Grid>
+          </Typography>
         </Paper>
       </div>
     );

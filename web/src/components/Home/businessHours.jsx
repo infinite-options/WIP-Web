@@ -20,10 +20,10 @@ import {
 } from "@material-ui/core";
 
 import styles from "./home.module.css";
-
+let editButton = null;
 class BusinessHours extends React.Component {
   showBusinessHours = () => {
-    let editButton = null;
+    
     if (this.props.venue_uid !== noLocation) {
       editButton = (
         <div className={styles.businessHoursButtonSection}>
@@ -47,7 +47,11 @@ class BusinessHours extends React.Component {
     return (
       <div>
         <TableContainer component={Paper}>
-          <Table>
+          <Table 
+            style={{
+                height: '0.5rem',
+              }}
+            className={styles.businessTableColor}>
             <TableHead>
               <TableRow>
                 <TableCell> Day </TableCell>
@@ -94,7 +98,7 @@ class BusinessHours extends React.Component {
             </TableBody>
           </Table>
         </TableContainer>
-        {editButton}
+        
       </div>
     );
   };
@@ -433,7 +437,7 @@ class BusinessHours extends React.Component {
         </TableContainer>
         <div className={styles.businessHoursButtonSection}>
           <div className={styles.businessHoursButtonItem}>
-            <div className={styles.businessHoursButton}>
+            <div className={styles.businessHoursButtonBottom}>
               <Button
                 variant='contained'
                 color='primary'
@@ -449,7 +453,7 @@ class BusinessHours extends React.Component {
             </div>
           </div>
           <div className={styles.businessHoursButtonItem}>
-            <div className={styles.businessHoursButton}>
+            <div className={styles.businessHoursButtonBottom}>
               <Button
                 variant='contained'
                 color='primary'
@@ -473,9 +477,11 @@ class BusinessHours extends React.Component {
     }
     return (
       <div className={styles.businessHoursSection}>
-        <Typography variant='h6' className={styles.sectionTitle}>
+        
+        <Typography variant='h6' className={styles.businessTitle} >
           {" "}
           Business Hours{" "}
+          {editButton != null ? editButton : ''}
         </Typography>
         {mainElement}
       </div>

@@ -21,7 +21,11 @@
 .entryTable {
     padding-left: 5px;
     text-align: left;
-    text-decoration-line: underline;
+    /* text-decoration-line: underline; */
+    background-color: #e9f3fe;
+}
+
+.businessTableColor {
     background-color: #e9f3fe;
 }
 
