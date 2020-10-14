@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { selectNewCategory, selectNewVenue, createNewVenue, changeAddress,
     changePhone, changeEmail, changeBusinessHours, changeMaxCapacity, changeDefaultWaitTime,
-    submitVenue,
+    submitVenue,changeOpenModalStatus
 } from '../../reducers/actions/newVenueActions';
 import { noCategory, noVenue, needVenue } from '../../constants';
 
@@ -11,12 +11,15 @@ import { Button, Grid, InputAdornment, MenuItem, Paper, Select, TextField, Typog
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/core";
 import {Form, Row} from 'react-bootstrap';
 import styles from './newVenue.module.css';
+import { createBrowserHistory } from 'history';
+const history = createBrowserHistory();
+
 class NewVenue extends React.Component {
 
     getCategories = () => {
         let categories = this.props.venues.map((currentValue) => {
             return currentValue.category;
-        })  
+        })
         let distinctCategories = categories.filter((elt, index) => {
             return categories.indexOf(elt) === index;
         })
@@ -40,13 +43,9 @@ class NewVenue extends React.Component {
         let businessHours = JSON.parse(JSON.stringify(this.props.businessHours));
         return (
             <TableContainer component={Paper}>
-                <Table
-                    style={{
-                        height: '0.5rem'
-                        }} 
-                    className= {styles.businessTableColor}>
+                <Table>
                     <TableHead>
-                        <TableRow >
+                        <TableRow>
                             <TableCell> Day </TableCell>
                             <TableCell> Open </TableCell>
                             <TableCell> Close </TableCell>
@@ -59,7 +58,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -74,7 +73,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -92,7 +91,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -107,7 +106,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -125,7 +124,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -140,7 +139,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -158,7 +157,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -173,7 +172,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -191,7 +190,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -206,7 +205,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -224,7 +223,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -239,7 +238,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -257,7 +256,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -272,7 +271,7 @@ class NewVenue extends React.Component {
                                 <TextField
                                     type='time'
                                     // InputProps={{
-                                    //     inputProps: { 
+                                    //     inputProps: {
                                     //         step: 1,
                                     //     }
                                     // }}
@@ -294,12 +293,8 @@ class NewVenue extends React.Component {
         let categories = this.getCategories();
         let venues = this.getVenues();
         return (
-            <div className = {styles.leftside}>
-                <Grid container
-                    direction="column"
-                    justify="flex-start"
-                    alignItems="flex-start"
-                >
+            <Grid item className={styles.modalColor} >                 
+                <Grid >
                     <Grid item className={styles.entry2}>
                         <Typography variant="h6"> NEW VENUE </Typography>
                     </Grid>
@@ -308,12 +303,13 @@ class NewVenue extends React.Component {
                     </Grid>
 
                     <Grid item className={styles.entry1}>
-                        <Select value={this.props.category}
+                        <Select  
                             style={{ width: '10rem',
                             textAlign: 'left'}}
-                            onChange={(event) => {  
-                                this.props.selectNewCategory(event.target.value);
-                            }}
+                            value={this.props.category}
+                                onChange={(event) => {
+                                    this.props.selectNewCategory(event.target.value);
+                                }}
                             >
                                 <MenuItem value= {noCategory} > Select a Category </MenuItem>
                                 {
@@ -323,28 +319,28 @@ class NewVenue extends React.Component {
                                 }
                         </Select>
                     </Grid>
-    
+
                     <Grid item className={styles.entry1}>
                         <Typography variant="body1"> Name Of Store </Typography>
                     </Grid>
                     <Grid item xs={12} md={6} sm={3}className={styles.entry1}>
-                        <Select
-                            style={{ width: '10rem',
-                            textAlign: 'left'}}
-                            disabled={this.props.category === noCategory}
-                            value={this.props.selectedVenueName}
-                            onChange={(event) => {
-                                this.props.selectNewVenue(event.target.value);
-                            }}
-                        >
-                            <MenuItem value={noVenue}> Select a Venue </MenuItem>
-                            {
-                                venues.map(venue => (
-                                    <MenuItem value={venue} key={venue}> {venue} </MenuItem>
-                                ))
-                            }
-                            <MenuItem value={needVenue}> Venue not in list </MenuItem>
-                        </Select>
+                                <Select
+                                    style={{ width: '10rem',
+                                    textAlign: 'left'}}
+                                    disabled={this.props.category === noCategory}
+                                    value={this.props.selectedVenueName}
+                                    onChange={(event) => {
+                                        this.props.selectNewVenue(event.target.value);
+                                    }}
+                                >
+                                    <MenuItem value={noVenue}> Select a Venue </MenuItem>
+                                    {
+                                        venues.map(venue => (
+                                            <MenuItem value={venue} key={venue}> {venue} </MenuItem>
+                                        ))
+                                    }
+                                    <MenuItem value={needVenue}> Venue not in list </MenuItem>
+                                </Select>
                     </Grid>
                     <Grid item className ={styles.form}>
                     <Form>
@@ -353,7 +349,7 @@ class NewVenue extends React.Component {
                                 <Form.Label >Email</Form.Label>
                             </Form.Row>
                             <Form.Row>
-                                <Form.Control 
+                                <Form.Control
                                 className = {styles.formControl}
                                 type="email"
                                 placeholder="xxxxx.xxxx@safeway.com"
@@ -363,13 +359,13 @@ class NewVenue extends React.Component {
                                 }} />
                             </Form.Row>
                         </Form.Group>
-                        
+
                         <Form.Group controlId="formGridPhoneNumber">
                             <Form.Row>
                                 <Form.Label>Phone Number</Form.Label>
                             </Form.Row>
-                            <Form.Row>    
-                                <Form.Control className = {styles.formControl} 
+                            <Form.Row>
+                                <Form.Control className = {styles.formControl}
                                 type="phone number" placeholder="0000000000"
                                 value={this.props.phone}
                                 onChange={(e) => {
@@ -387,7 +383,7 @@ class NewVenue extends React.Component {
                             </Form.Row>
                             <Form.Row>
                                 <Form.Control className = {styles.formControl}
-                                    placeholder="Apartment, studio, or floor" 
+                                    placeholder="Apartment, studio, or floor"
                                     value={this.props.address['address']}
                                     onChange={(e) => {
                                     this.props.changeAddress(this.props.address, 'address', e.target.value);
@@ -401,7 +397,7 @@ class NewVenue extends React.Component {
                                     value={this.props.address['city']}
                                     onChange={(e) => {
                                     this.props.changeAddress(this.props.address, 'city', e.target.value);
-                                    }}    
+                                    }}
                                />
                             </Grid>
                             <Grid item className={styles.formControlGridSpacing}>
@@ -409,7 +405,7 @@ class NewVenue extends React.Component {
                                     value={this.props.address['state']}
                                     onChange={(e) => {
                                     this.props.changeAddress(this.props.address, 'state', e.target.value);
-                                    }} 
+                                    }}
                                 />
                             </Grid>
                             <Grid item className={styles.formControlGridSpacing}>
@@ -430,10 +426,10 @@ class NewVenue extends React.Component {
                             </Form.Row>
                             <Form.Row>
                                 <Form.Control className = {styles.formControlAddress}
-                                    placeholder="42" 
+                                    placeholder="42"
                                     type='number'
                                     InputProps={{
-                                        inputProps: {   
+                                        inputProps: {
                                             min: 0,
                                         }
                                     }}
@@ -456,15 +452,15 @@ class NewVenue extends React.Component {
                                    placeholder="Hr"
                                    type='number'
                                    InputProps={{
-       
-                                      // endAdornment: <InputAdornment position='end'>Hours</InputAdornment>,
-                                       inputProps: { 
-                                           max: 23, min: 0 
+
+                                    //   endAdornment: <InputAdornment position='end'>Hours</InputAdornment>,
+                                       inputProps: {
+                                           max: 23, min: 0
                                        }
                                    }}
                                    value={this.props.defaultWaitTime.hr}
                                    onChange={(e) => {
-                                       this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'hr',e.target.value);
+                                       this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'hr',e.target.value  );
                                    }}
                                 />
                                 </Grid>
@@ -473,9 +469,9 @@ class NewVenue extends React.Component {
                                    placeholder="Min"
                                    type='number'
                                    InputProps={{
-                                       //endAdornment: <InputAdornment position='end'>Minutes</InputAdornment>,
-                                       inputProps: { 
-                                           max: 59, min: 0 
+                                    //    endAdornment: <InputAdornment position='end'>Minutes</InputAdornment>,
+                                       inputProps: {
+                                           max: 59, min: 0
                                        }
                                    }}
                                    value={this.props.defaultWaitTime.min}
@@ -486,7 +482,7 @@ class NewVenue extends React.Component {
 
                                 </Grid>
                             </Grid>
-                            
+
                         </Form.Group>
                     </Grid>
                     </Grid>
@@ -494,13 +490,16 @@ class NewVenue extends React.Component {
 
                     <Grid item className={styles.entryTable}>
                         <Typography variant="h6"> BUSINESS HOURS </Typography>
-                        {this.businessHours()}
+                        <Grid className={styles.businessHoursSection}>
+                            {this.businessHours()}
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}  className={styles.entry1}>
+                    <Grid className={styles.btnEntry}>
                         <Button
                             variant="contained"
                             color="primary"
                             position=""
+                            size="small"
                             onClick={() => {
                                 this.props.submitVenue(this.props.venues, this.props.category, this.props.selectedVenueName,
                                     this.props.newVenueName, this.props.address, this.props.phone, this.props.email,
@@ -508,9 +507,33 @@ class NewVenue extends React.Component {
                             }}
                         >
                             Add Venue
+                            
                         </Button>
+                        
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            position=""
+                            size="small"
+                            onClick={() => {
+                              history.push('/');
+                              window.location.reload();
+                            }}
+                        >
+                            Close
+                        </Button> 
                     </Grid>
-            </div>
+           
+            </Grid>
+
         )
     }
 };

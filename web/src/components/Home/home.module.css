@@ -44,41 +44,38 @@
 }
 
 .venueInfo {
-    width: 12rem;
+    width: 13rem;
     border: 1px solid gray;
     margin-bottom: 1rem;
     margin-left: 1rem;
     margin-right: 1rem;
+  
 }
 
 .venueInfoButton {
-    min-height: 5rem;
-    width: 12rem;
+    min-height: 7rem;
+    width: 13rem;
+    
 }
 
 .venueInfoEditing {
-    padding: 8px;
+    padding-right: 0.2rem;
+    padding-top: -0.5rem;
     display: inline-block;
-    margin-top: -0.8rem;
-    margin-right: 1rem;
+   
 }
 
 .venueInfoEditing1 {
-    padding-right: 25px;
+    padding-right: 0.2rem;
     display: inline-block;
-    /* margin-top: -0.8rem; */
-    /* margin-right: 1rem; */
+    padding-top: -0.5rem;
+   
 }
 
 .tableHeading {
     padding: "10px 0 0 15px";
 }
 
-.h6.sectionTitle {
-    color: black;
-    font-weight: 100;
-
-}
 .businessTitle{
     color: black;
     text-align: left;
@@ -99,15 +96,19 @@
     display: flex;
     padding: 1rem;
     flex-wrap: wrap;
+    
 }
 
 .waitButton{
-    margin-left: 2rem;
+    margin-left: 3rem;
     flex-direction: row;
-    display: flex;
-    position: relative;
 }
 
+.defaultTimeWaitButton{
+    margin-left: 2rem;
+    flex-direction: row;
+
+}
 .capacityField{
     width : 3rem;
 }

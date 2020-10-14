@@ -441,6 +441,7 @@ class BusinessHours extends React.Component {
               <Button
                 variant='contained'
                 color='primary'
+                size='small'
                 onClick={() =>
                   this.props.submitBusinessHours(
                     businessHours,
@@ -457,6 +458,7 @@ class BusinessHours extends React.Component {
               <Button
                 variant='contained'
                 color='primary'
+                size='small'
                 onClick={() => this.props.editBusinessHoursStatus(false)}
               >
                 Cancel
@@ -480,7 +482,7 @@ class BusinessHours extends React.Component {
         
         <Typography variant='h6' className={styles.businessTitle} >
           {" "}
-          Business Hours{" "}
+          Business Hours{"  "}
           {editButton != null ? editButton : ''}
         </Typography>
         {mainElement}
