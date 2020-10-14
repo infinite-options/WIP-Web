@@ -24,11 +24,13 @@ class DefaultWaitTime extends React.Component {
     if (this.props.defaultWaitTime) {
       if (this.props.editingDefaultWaitTime) {
         return (
-          <Grid container>
-            <Grid item xs={12} className={styles.venueInfoEditing}>
+          
+          <div>
               <TextField
                 type='number'
+                placeholder='Hr'
                 value={this.props.newDefaultWaitTimeHour}
+                className = {styles.capacityField}
                 onChange={(e) => {
                   this.props.editDefaultWaitTime(
                     e.target.value,
@@ -36,20 +38,22 @@ class DefaultWaitTime extends React.Component {
                   );
                 }}
                 InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>Hours</InputAdornment>
-                  ),
+                  // endAdornment: (
+                  //   <InputAdornment position='end'>Hrs</InputAdornment>
+                  // ),
                   inputProps: {
                     max: 23,
                     min: 0,
                   },
                 }}
               />
-            </Grid>
-            <Grid item xs={12} className={styles.venueInfoEditing}>
+              &nbsp;&nbsp;
+          
               <TextField
                 type='number'
+                placeholder='Min'
                 value={this.props.newDefaultWaitTimeMinute}
+                className = {styles.capacityField}
                 onChange={(e) => {
                   this.props.editDefaultWaitTime(
                     this.props.newDefaultWaitTimeHour,
@@ -57,20 +61,21 @@ class DefaultWaitTime extends React.Component {
                   );
                 }}
                 InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>Minutes</InputAdornment>
-                  ),
+                  // endAdornment: (
+                  //   <InputAdornment position='end'>Min</InputAdornment>
+                  // ),
                   inputProps: {
                     max: 59,
                     min: 0,
                   },
                 }}
               />
-            </Grid>
-            <Grid item xs={12} md={6} className={styles.venueInfoEditing}>
+         
+            <div style={{marginLeft:'-5rem', paddingTop:'0.5rem'}}>
               <Button
                 variant='contained'
                 color='primary'
+                size='small'
                 className = {styles.capacityButton}
                 onClick={() =>
                   this.props.submitDefaultWaitTime(
@@ -82,18 +87,19 @@ class DefaultWaitTime extends React.Component {
               >
                 Save
               </Button>
-            </Grid>
-            <Grid item xs={12} md={6} className={styles.venueInfoEditing}>
+              &nbsp;&nbsp;
               <Button
                 variant='contained'
                 color='primary'
+                size='small'
                 className = {styles.capacityButton}
                 onClick={() => this.props.editDefaultWaitTimeStatus(false)}
               >
                 Cancel
               </Button>
-            </Grid>
-          </Grid>
+           </div>
+         
+          </div>
         );
       } else {
         return (
@@ -101,6 +107,7 @@ class DefaultWaitTime extends React.Component {
             <Button
               variant='contained'
               color='primary'
+              size='small'
               onClick={() => this.props.editDefaultWaitTimeStatus(true)}
             >
               Edit
@@ -117,16 +124,15 @@ class DefaultWaitTime extends React.Component {
     return (
       <div className={styles.venueInfo}>
         <Paper className={styles.venueInfoButton}>
-          <Typography variant='h6' className={styles.sectionTitle}>
+          <Typography variant='h6'>
             {" "}
             Default Wait Time{" "}
           </Typography>
           
           <Typography variant='body1' container direction="column">
-          <Grid container direction="row" className = {styles.waitButton}
-           > 
-            
+          <Grid container className = {styles.defaultTimeWaitButton}> 
             {this.props.defaultWaitTime}
+            &nbsp;&nbsp;
             {this.editDefaultWaitTimeStatus()}
             </Grid>
             </Typography>

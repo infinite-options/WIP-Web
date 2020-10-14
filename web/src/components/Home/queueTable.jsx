@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { selectFilterQueue } from '../../reducers/actions/venueActions';
 import { noLocation, allStatus, waitingStatus, inStoreStatus, exitedStatus } from '../../constants';
 
-import { Typography, TableHead, TableRow, TableCell, Select, MenuItem } from "@material-ui/core";
+import { Typography, TableHead, TableRow, TableCell, Select, MenuItem, Grid } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import styles from './home.module.css';
@@ -16,6 +16,18 @@ class QueueTable extends React.Component {
     render() {
         return (
         <div className={styles.currentQueue}>
+            <Grid container direction="row" style={{backgroundColor:"white"}}>
+                <Grid item xs={12} md={12}>
+                    <Typography variant='h6'align='center'>
+                        CURRENT QUEUE TABLE
+                    </Typography>
+                </Grid>
+                {/* <Grid item xs={6} md={6}>
+                    <Typography variant='h6'>
+                        Part 2
+                    </Typography>
+                </Grid>  */}
+            </Grid>
             <MaterialTable
             style = {{
                 backgroundColor: '#e9f3fe'
@@ -26,7 +38,7 @@ class QueueTable extends React.Component {
                 emptyRowsWhenPaging: true,   //to make page size fix in case of less data rows
                 pageSizeOptions:[7,14,21],    // rows selection options
             }}
-                title="Current Queue Table"
+                title=""
                 columns={
                     [
                     { title:'Token #', field: 'token_number',width:'6rem' },
@@ -56,7 +68,7 @@ class QueueTable extends React.Component {
                         <div style={{
                             padding: '10px 0 0 10px'
                         }}>
-                            <Typography variant="h4" className={styles.sectionTitle}>
+                            <Typography variant="h5">
                                 {props.title}
                             </Typography>
                         </div>

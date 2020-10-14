@@ -1,6 +1,6 @@
 .root {
     background-color: 'blue';
-    margin: 5px 5px;
+    margin: 0% 0;
 }
 
 .entry1 {
@@ -11,7 +11,9 @@
     text-decoration-line: underline;
     padding-left: 5px;
 }
-
+.modalColor{
+    background-color: #e9f3fe ;
+}
 .form {
     padding-left: 5px;
     text-align: left;
@@ -21,12 +23,6 @@
 .entryTable {
     padding-left: 5px;
     text-align: left;
-    /* text-decoration-line: underline; */
-    background-color: #e9f3fe;
-}
-
-.businessTableColor {
-    background-color: #e9f3fe;
 }
 
 .formControl {
@@ -46,11 +42,15 @@
 .formControlTwoElement {
     width: 90px;
 }
-
-.leftside {
-    width: 400px;
-    background-color: #e9f3fe;
-    margin: 12px 0px 0px 0px;
-    border-top: 0px solid;
-    border-right: 1px solid;
+.businessHoursSection {
+    width: 80%;
+    flex-direction: row;
+    background-color: #e9f3fe ;
+}
+.btnEntry {
+    padding-left: 5px;
+    padding-top: 10px;
+}
+.tableColor{
+    background-color: #e9f3fe ;
 }

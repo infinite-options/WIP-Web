@@ -19,7 +19,7 @@ function Home() {
         <Grid className={styles.leftPanel} item xs={12} md={4}>
         <SelectVenue />
           <Grid className={styles.venue} item xs={12} md={12}>
-            <Grid item xs={6} md={6}>
+            <Grid item xs={6} md={6} >
               <InVenue />
             </Grid>
             <Grid item xs={6} md={6}>

@@ -11,7 +11,7 @@ class InVenue extends React.Component {
     return (
       <div className={styles.venueInfo}>
         <Paper className={styles.venueInfoButton}>
-          <Typography variant='h6' className={styles.sectionTitle}>
+          <Typography variant='h6'>
             {" "}
             In Venue{" "}
           </Typography>

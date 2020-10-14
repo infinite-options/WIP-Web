@@ -35,9 +35,11 @@ a {
 
 .modalClass{
     top                   : 100px;
-    left                  : '50%';
+    left                  : 'auto';
     right                 : 'auto';
     bottom                : 'auto';
-    margin-right           : '-50%';
+    margin-right           : 'auto';
     transform             : 'translate(-50%, -50%)';
+    width: 50%
+    
 }
