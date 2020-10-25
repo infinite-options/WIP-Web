@@ -8,6 +8,7 @@ import { noCategory, noLocation, noVenue } from '../../constants';
 import { Grid, MenuItem, Select, Box, StylesProvider } from "@material-ui/core";
 
 import styles from "./home.module.css";
+
 class SelectVenue extends React.Component{
 
     getCategories = () => {
@@ -73,6 +74,7 @@ class SelectVenue extends React.Component{
                         onChange={(event) => {
                             event.preventDefault();
                             this.props.selectVenue(event.target.value);
+
                         }}
                     >
                         <MenuItem value={noVenue}> Select a Venue </MenuItem>

@@ -5,32 +5,19 @@ import { connect } from 'react-redux';
 import { selectFilterQueue } from '../../reducers/actions/venueActions';
 import { noLocation, allStatus, waitingStatus, inStoreStatus, exitedStatus } from '../../constants';
 
-import { Typography, TableHead, TableRow, TableCell, Select, MenuItem, Grid } from "@material-ui/core";
+import { Typography, Table, TableHead, TableRow, TableCell, Select, MenuItem, Grid } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import styles from './home.module.css';
-import { blue } from '@material-ui/core/colors';
 
 class QueueTable extends React.Component {
 
     render() {
         return (
         <div className={styles.currentQueue}>
-            <Grid container direction="row" style={{backgroundColor:"white"}}>
-                <Grid item xs={12} md={12}>
-                    <Typography variant='h6'align='center'>
-                        CURRENT QUEUE TABLE
-                    </Typography>
-                </Grid>
-                {/* <Grid item xs={6} md={6}>
-                    <Typography variant='h6'>
-                        Part 2
-                    </Typography>
-                </Grid>  */}
-            </Grid>
             <MaterialTable
             style = {{
-                backgroundColor: '#e9f3fe'
+                backgroundColor: '#e9f3fe'             
             }}
             options={{
                 paging:true,
@@ -38,7 +25,21 @@ class QueueTable extends React.Component {
                 emptyRowsWhenPaging: true,   //to make page size fix in case of less data rows
                 pageSizeOptions:[7,14,21],    // rows selection options
             }}
-                title=""
+            title = "CURRENT QUEUE TABLE"
+            //     title={
+            //     <Grid container direction="row" style={{backgroundColor:'white'}}>
+            //     <Grid item xs={6} md={4}>
+            //         <Typography variant='h6' align='left'>
+            //             CURRENT QUEUE TABLE
+            //         </Typography>
+            //     </Grid>
+            //     <Grid item xs={6} md={6}>
+            //         <Typography variant='h6' align='right'>
+            //             Part 2
+            //         </Typography>
+            //     </Grid>
+            // </Grid>
+            //     }
                 columns={
                     [
                     { title:'Token #', field: 'token_number',width:'6rem' },
@@ -59,6 +60,7 @@ class QueueTable extends React.Component {
                         }
                     },
                     {title: 'Commute Time', field: 'commute_time'},
+                    {title: 'Wait Time', field: 'wait_time' },
                     {title: 'Customer Phone #', field: 'customer_number', width:'12.5rem'}
                 ]}
                 data={this.props.queueData}
@@ -66,16 +68,22 @@ class QueueTable extends React.Component {
                     
                     Toolbar: props => (
                         <div style={{
-                            padding: '10px 0 0 10px'
+                            padding: '5px 0 0 10px',
                         }}>
-                            <Typography variant="h5">
+                            <Typography variant="h6" align='left'>
                                 {props.title}
                             </Typography>
+                            {/* <Typography id = 'pqr' variant="h6" align='center'>
+                                "part 1"
+                            </Typography>
+                            <Typography variant="h6" align='right'>
+                                "part 2"
+                            </Typography> */}
                         </div>
                     ),
                     Header: props => (
                         <TableHead item className={styles.cell}>
-                            <TableRow >
+                            <TableRow style={{backgroundColor:'#e9f3fe'}}>
                                 <TableCell> {props.columns[0].title} </TableCell>
                                 <TableCell> {props.columns[1].title} </TableCell>
                                 <TableCell> {props.columns[2].title} </TableCell>
@@ -94,6 +102,7 @@ class QueueTable extends React.Component {
                                 </TableCell>
                                 <TableCell> {props.columns[4].title} </TableCell>
                                 <TableCell> {props.columns[5].title} </TableCell>
+                                <TableCell> {props.columns[6].title} </TableCell>
                             </TableRow>
                         </TableHead>
                     )

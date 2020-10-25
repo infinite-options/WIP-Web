@@ -29,6 +29,7 @@ class DefaultWaitTime extends React.Component {
               <TextField
                 type='number'
                 placeholder='Hr'
+                style= {{marginTop: '-0.5rem'}}
                 value={this.props.newDefaultWaitTimeHour}
                 className = {styles.capacityField}
                 onChange={(e) => {
@@ -52,6 +53,7 @@ class DefaultWaitTime extends React.Component {
               <TextField
                 type='number'
                 placeholder='Min'
+                style= {{marginTop: '-0.5rem'}}
                 value={this.props.newDefaultWaitTimeMinute}
                 className = {styles.capacityField}
                 onChange={(e) => {
@@ -71,7 +73,7 @@ class DefaultWaitTime extends React.Component {
                 }}
               />
          
-            <div style={{marginLeft:'-5rem', paddingTop:'0.5rem'}}>
+            <div style={{marginLeft:'-5rem', paddingTop:'0.3rem'}}>
               <Button
                 variant='contained'
                 color='primary'
@@ -124,7 +126,7 @@ class DefaultWaitTime extends React.Component {
     return (
       <div className={styles.venueInfo}>
         <Paper className={styles.venueInfoButton}>
-          <Typography variant='h6'>
+        <Typography variant='subtitle1' style={{fontSize:'1.2rem'}}>
             {" "}
             Default Wait Time{" "}
           </Typography>
