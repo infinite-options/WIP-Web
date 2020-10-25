@@ -8,7 +8,11 @@ import { selectNewCategory, selectNewVenue, createNewVenue, changeAddress,
 import { noCategory, noVenue, needVenue } from '../../constants';
 
 import { Button, Grid, InputAdornment, MenuItem, Paper, Select, TextField, Typography } from "@material-ui/core";
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/core";
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, ThemeProvider } from "@material-ui/core";
+
+import { createMuiTheme } from '@material-ui/core/styles';
+
+
 import {Form, Row} from 'react-bootstrap';
 import styles from './newVenue.module.css';
 import { createBrowserHistory } from 'history';
@@ -40,9 +44,39 @@ class NewVenue extends React.Component {
     }
 
     businessHours = () => {
-        let businessHours = JSON.parse(JSON.stringify(this.props.businessHours));
+        let jsonDefaultTime = {
+            'Su':['09:00','18:00'],
+            'M':['09:00','18:00'],
+            'T':['09:00','18:00'],
+            'W':['09:00','18:00'],
+            'Th':['09:00','18:00'],
+            'F':['09:00','18:00'],
+            'S':['09:00','18:00'],
+        }
+        /*let businessHours = JSON.parse(JSON.stringify(this.props.businessHours));
+        */
+       let businessHours = JSON.parse(JSON.stringify(jsonDefaultTime)); 
+
+        const theme = createMuiTheme({
+            overrides: {
+                MuiTableCell: {
+                    root: {  //This can be referred from Material UI API documentation. 
+                        padding: '4px 8px',
+                        backgroundColor: "white",
+                    },
+                }
+            },
+        });
+
+
+        // let defaultTime = {
+        //     openTime: "09:00",
+        //     closeTime: "18:00"
+        // };
         return (
             <TableContainer component={Paper}>
+            <ThemeProvider theme={theme}>
+
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -63,7 +97,8 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // Su 0
-                                    value={businessHours['Su'][0]}
+                                    //value= {businessHours['Su'][0]}
+                                    defaultValue = {businessHours['Su'][0]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'Su',0,e.target.value);
                                     }}
@@ -78,7 +113,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // Su 1
-                                    value={businessHours['Su'][1]}
+                                    defaultValue={businessHours['Su'][1]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'Su',1,e.target.value);
                                     }}
@@ -96,7 +131,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // M 0
-                                    value={businessHours['M'][0]}
+                                    defaultValue={businessHours['M'][0]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'M',0,e.target.value);
                                     }}
@@ -111,7 +146,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // M 1
-                                    value={businessHours['M'][1]}
+                                    defaultValue={businessHours['M'][1]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'M',1,e.target.value);
                                     }}
@@ -129,7 +164,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // T 0
-                                    value={businessHours['T'][0]}
+                                    defaultValue={businessHours['T'][0]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'T',0,e.target.value);
                                     }}
@@ -144,7 +179,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // T 1
-                                    value={businessHours['T'][1]}
+                                    defaultValue={businessHours['T'][1]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'T',1,e.target.value);
                                     }}
@@ -162,7 +197,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // W 0
-                                    value={businessHours['W'][0]}
+                                    defaultValue={businessHours['W'][0]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'W',0,e.target.value);
                                     }}
@@ -177,7 +212,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // W 1
-                                    value={businessHours['W'][1]}
+                                    defaultValue={businessHours['W'][1]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'W',1,e.target.value);
                                     }}
@@ -195,7 +230,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // Th 0
-                                    value={businessHours['Th'][0]}
+                                    defaultValue={businessHours['Th'][0]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'Th',0,e.target.value);
                                     }}
@@ -210,7 +245,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // Th 1
-                                    value={businessHours['Th'][1]}
+                                    defaultValue={businessHours['Th'][1]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'Th',1,e.target.value);
                                     }}
@@ -228,7 +263,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // F 0
-                                    value={businessHours['F'][0]}
+                                    defaultValue={businessHours['F'][0]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'F',0,e.target.value);
                                     }}
@@ -243,7 +278,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // F 1
-                                    value={businessHours['F'][1]}
+                                    defaultValue={businessHours['F'][1]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'F',1,e.target.value);
                                     }}
@@ -261,7 +296,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // S 0
-                                    value={businessHours['S'][0]}
+                                    defaultValue={businessHours['S'][0]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'S',0,e.target.value);
                                     }}
@@ -276,7 +311,7 @@ class NewVenue extends React.Component {
                                     //     }
                                     // }}
                                     // S 1
-                                    value={businessHours['S'][1]}
+                                    defaultValue={businessHours['S'][1]}
                                     onChange={(e) => {
                                         this.props.changeBusinessHours(businessHours,'S',1,e.target.value);
                                     }}
@@ -285,6 +320,7 @@ class NewVenue extends React.Component {
                         </TableRow>
                     </TableBody>
                 </Table>
+            </ThemeProvider>
             </TableContainer>
         )
     }
@@ -292,9 +328,9 @@ class NewVenue extends React.Component {
     render() {
         let categories = this.getCategories();
         let venues = this.getVenues();
-        return (
-            <Grid item className={styles.modalColor} >                 
-                <Grid >
+        return (              
+            <div style={{backgroundColor:'#e9f3fe', display: 'flex'}}>
+                <Grid item>
                     <Grid item className={styles.entry2}>
                         <Typography variant="h6"> NEW VENUE </Typography>
                     </Grid>
@@ -393,12 +429,12 @@ class NewVenue extends React.Component {
                         </Form.Group>
                         <Grid container direction="row" >
                             <Grid item className={styles.formControlGridSpacing} >
-                               <Form.Control  placeholder="City" className = {styles.formControlAddress}
+                            <Form.Control  placeholder="City" className = {styles.formControlAddress}
                                     value={this.props.address['city']}
                                     onChange={(e) => {
                                     this.props.changeAddress(this.props.address, 'city', e.target.value);
                                     }}
-                               />
+                            />
                             </Grid>
                             <Grid item className={styles.formControlGridSpacing}>
                                 <Form.Control placeholder="State" className = {styles.formControlAddress}
@@ -419,7 +455,7 @@ class NewVenue extends React.Component {
                         </Grid>
                     </Grid>
                     <Grid container direction="row" >
-                     <Grid item className ={styles.form}>
+                    <Grid item className ={styles.form}>
                         <Form.Group>
                             <Form.Row>
                             <Form.Label>Max Capacity</Form.Label>
@@ -449,35 +485,35 @@ class NewVenue extends React.Component {
                             <Grid container direction="row" >
                                 <Grid item className={styles.formControlGridSpacing} >
                                 <Form.Control className = {styles.formControlAddress}
-                                   placeholder="Hr"
-                                   type='number'
-                                   InputProps={{
+                                placeholder="Hr"
+                                type='number'
+                                InputProps={{
 
                                     //   endAdornment: <InputAdornment position='end'>Hours</InputAdornment>,
-                                       inputProps: {
-                                           max: 23, min: 0
-                                       }
-                                   }}
-                                   value={this.props.defaultWaitTime.hr}
-                                   onChange={(e) => {
-                                       this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'hr',e.target.value  );
-                                   }}
+                                    inputProps: {
+                                        max: 23, min: 0
+                                    }
+                                }}
+                                value={this.props.defaultWaitTime.hr}
+                                onChange={(e) => {
+                                    this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'hr',e.target.value  );
+                                }}
                                 />
                                 </Grid>
                                 <Grid item className={styles.formControlGridSpacing} >
                                 <Form.Control className = {styles.formControlAddress}
-                                   placeholder="Min"
-                                   type='number'
-                                   InputProps={{
+                                placeholder="Min"
+                                type='number'
+                                InputProps={{
                                     //    endAdornment: <InputAdornment position='end'>Minutes</InputAdornment>,
-                                       inputProps: {
-                                           max: 59, min: 0
-                                       }
-                                   }}
-                                   value={this.props.defaultWaitTime.min}
-                                   onChange={(e) => {
-                                       this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'min',e.target.value);
-                                   }}
+                                    inputProps: {
+                                        max: 59, min: 0
+                                    }
+                                }}
+                                value={this.props.defaultWaitTime.min}
+                                onChange={(e) => {
+                                    this.props.changeDefaultWaitTime(this.props.defaultWaitTime,'min',e.target.value);
+                                }}
                                 />
 
                                 </Grid>
@@ -488,13 +524,15 @@ class NewVenue extends React.Component {
                     </Grid>
                 </Grid>
 
-                    <Grid item className={styles.entryTable}>
-                        <Typography variant="h6"> BUSINESS HOURS </Typography>
-                        <Grid className={styles.businessHoursSection}>
-                            {this.businessHours()}
+                <Grid item style={{padding:'4rem'}} >
+                    <div>
+                        <Grid item className={styles.entryTable}>
+                            <Typography variant="h8"> Business Hours </Typography>
+                            <Grid className={styles.businessHoursSection}>
+                                {this.businessHours()}
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid className={styles.btnEntry}>
+                        <Grid className={styles.btnEntry}>
                         <Button
                             variant="contained"
                             color="primary"
@@ -510,14 +548,10 @@ class NewVenue extends React.Component {
                             
                         </Button>
                         
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <Button
                             variant="contained"
                             color="primary"
@@ -530,10 +564,10 @@ class NewVenue extends React.Component {
                         >
                             Close
                         </Button> 
-                    </Grid>
-           
-            </Grid>
-
+                </Grid>
+                    </div>
+                </Grid>
+            </div>
         )
     }
 };

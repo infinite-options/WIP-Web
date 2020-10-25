@@ -9,7 +9,8 @@ import {
 } from "../../reducers/actions/venueActions";
 import { noLocation } from "../../constants";
 
-import { Button, Paper, TextField, Typography } from "@material-ui/core";
+import { Button, Paper, TextField, Typography, ThemeProvider } from "@material-ui/core";
+import { createMuiTheme } from '@material-ui/core/styles';
 import {
   TableContainer,
   Table,
@@ -21,9 +22,10 @@ import {
 
 import styles from "./home.module.css";
 let editButton = null;
+
+
 class BusinessHours extends React.Component {
   showBusinessHours = () => {
-    
     if (this.props.venue_uid !== noLocation) {
       editButton = (
         <div className={styles.businessHoursButtonSection}>
@@ -32,6 +34,7 @@ class BusinessHours extends React.Component {
               <Button
                 variant='contained'
                 color='primary'
+                size = 'small'
                 onClick={() => this.props.editBusinessHoursStatus(true)}
               >
                 Edit
@@ -47,6 +50,7 @@ class BusinessHours extends React.Component {
     return (
       <div>
         <TableContainer component={Paper}>
+        {/* <ThemeProvider theme={theme}> */}
           <Table 
             style={{
                 height: '0.5rem',
@@ -97,6 +101,7 @@ class BusinessHours extends React.Component {
               </TableRow>
             </TableBody>
           </Table>
+        {/* </ThemeProvider> */}
         </TableContainer>
         
       </div>
@@ -108,6 +113,7 @@ class BusinessHours extends React.Component {
     return (
       <div>
         <TableContainer component={Paper}>
+        {/* <ThemeProvider theme={theme}> */}
           <Table>
             <TableHead>
               <TableRow>
@@ -434,6 +440,7 @@ class BusinessHours extends React.Component {
               </TableRow>
             </TableBody>
           </Table>
+        {/* </ThemeProvider> */}
         </TableContainer>
         <div className={styles.businessHoursButtonSection}>
           <div className={styles.businessHoursButtonItem}>
@@ -472,6 +479,18 @@ class BusinessHours extends React.Component {
 
   render() {
     let mainElement = null;
+    const theme = createMuiTheme({
+      overrides: {
+          MuiTableCell: {
+              root: {  //This can be referred from Material UI API documentation. 
+                  //padding: '4px 8px',
+                  //maxHeight: '25px',
+                  backgroundColor: "white",
+                  height: '0.1rem'
+              },
+          }
+      },
+    });
     if (!this.props.editingBusinessHours) {
       mainElement = this.showBusinessHours();
     } else {
@@ -481,7 +500,6 @@ class BusinessHours extends React.Component {
       <div className={styles.businessHoursSection}>
         
         <Typography variant='h6' className={styles.businessTitle} >
-          {" "}
           Business Hours{"  "}
           {editButton != null ? editButton : ''}
         </Typography>

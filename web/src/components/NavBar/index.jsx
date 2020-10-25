@@ -9,13 +9,14 @@ import NewVenue from "./../NewVenue";
 
 const customStyles = {
   content:{
-    top                   : '10%',
-    left                  : '10%',
-    right                 : '10%',
-    bottom                : '10%',
-    marginRight           : '20%',
-    marginLeft            : '20%',
-    border                 :'1px solid '
+    top                   : '2%',
+    left                  : '18%',
+    right                 : '18%',
+    bottom                : '15%',
+    marginRight           : '5%',
+    marginLeft            : '5%',
+    border                 :'1px solid'
+
   }
 }
 class NavBar extends React.Component {
