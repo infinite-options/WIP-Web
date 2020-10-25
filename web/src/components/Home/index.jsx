@@ -17,9 +17,9 @@ function Home() {
     <div className={styles.home}>
       <Grid container className={styles.mainSection}>
         <Grid className={styles.leftPanel} item xs={12} md={4}>
-        <SelectVenue />
+          <SelectVenue />
           <Grid className={styles.venue} item xs={12} md={12}>
-            <Grid item xs={6} md={6} >
+            <Grid item xs={6} md={6}>
               <InVenue />
             </Grid>
             <Grid item xs={6} md={6}>
@@ -43,9 +43,12 @@ function Home() {
 }
 
 Home.propTypes = {
-  fetchVenues: PropTypes.func.isRequired,
+  fetchVenues: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, {})(Home);
+export default connect(
+  mapStateToProps,
+  {}
+)(Home);
