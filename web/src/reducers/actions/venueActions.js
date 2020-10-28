@@ -9,6 +9,21 @@ import { FETCH_VENUES, SELECT_CATEGORY, SELECT_VENUE, SELECT_LOCATION,
 import { API_URL, noLocation, noBusinessHours,
     allStatus, waitingStatus, inStoreStatus, exitedStatus } from '../../constants';
 
+export const selectADate = (selected_venue_uid, selectedDate) => dispatch => {
+    axios
+    .get(API_URL+'venue_info_admin'+ '/' + selected_venue_uid + '/' + selectedDate)
+    // .get(API_URL+'venue_info_admin'+ '/' + selected_venue_uid.toString() + '/' + selectedDate.toString())
+    .then((res) => {
+        console.log("Got an update");
+        
+        
+    })
+    .catch(function (error) {
+        console.log(error);
+
+    });
+}
+
 export const fetchVenues = () => dispatch => {
     axios
         .get(API_URL+'all_venues')
