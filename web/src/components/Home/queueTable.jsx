@@ -36,12 +36,17 @@ class QueueTable extends React.Component {
                     
                     </Typography>
                 <TextField
-                    id= 'queueTableDate'
-                    type="date"
+                    id= "queueTableDate"
+                        // label="Date"
+                        type="date"
+                        defaultValue="2017-05-24"
+                       
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
 
                     onChange = {(event) => {
                         console.log(typeof event.target.value);
-                        // console.log(event.target.value);
                         this.props.selectADate(this.props.venue_uid, event.target.value);
                     }}
                 />
