@@ -15,8 +15,6 @@ export const selectADate = (selected_venue_uid, selectedDate) => dispatch => {
     // .get(API_URL+'venue_info_admin'+ '/' + selected_venue_uid.toString() + '/' + selectedDate.toString())
     .then((res) => {
         console.log("Got an update");
-        
-        
     })
     .catch(function (error) {
         console.log(error);

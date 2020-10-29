@@ -32,23 +32,8 @@ class QueueTable extends React.Component {
                 <Grid container direction="row" >
                 <Grid item xs={12} md={6}>
                     <Typography variant='h6' align='left'>
-                        CURRENT QUEUE TABLE
-                  
-                    {/* <Select 
-                        onChange={(event) => {  
-                            this.props.selectCategory(event.target.value);
-                        }}
-                    >
-                        <MenuItem value={noDate} > Select a Category </MenuItem>
-                        {
-                            categories.map(category => (
-                                <MenuItem
-                                 value={category} key={category}> {category} </MenuItem>
-                            ))
-                        }
-                        
-                    </Select>   
-                         */}
+                        CURRENT QUEUE TABLE 
+                    
                     </Typography>
                 <TextField
                     id= 'queueTableDate'
