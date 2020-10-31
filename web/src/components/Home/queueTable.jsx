@@ -2,12 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { selectFilterQueue, selectADate } from '../../reducers/actions/venueActions';
+import { selectFilterQueue, selectADate} from '../../reducers/actions/venueActions';
 import { noLocation, allStatus, waitingStatus, inStoreStatus, exitedStatus } from '../../constants';
-
 import TextField from '@material-ui/core/TextField';
 
-import { Typography, Table, TableHead, TableRow, TableCell, Select, MenuItem, Grid } from "@material-ui/core";
+import {Button, Typography, TableHead, TableRow, TableCell, Select, MenuItem, Grid, } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import styles from './home.module.css';
@@ -36,20 +35,25 @@ class QueueTable extends React.Component {
                     
                     </Typography>
                 <TextField
-                    id= "queueTableDate"
-                        // label="Date"
-                        type="date"
-                        defaultValue="2017-05-24"
-                       
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-
+                style={{ width: '9rem'}}
+                    type="date"
+                    
                     onChange = {(event) => {
-                        console.log(typeof event.target.value);
+                        // console.log(typeof event.target.value);
+                        event.preventDefault();
                         this.props.selectADate(this.props.venue_uid, event.target.value);
                     }}
+
                 />
+              <Button
+                variant='contained'
+                color='primary'
+                size = 'small'
+                onClick={() => this.props.selectADate(this.props.venue_uid, null)}
+              >
+                All Tokens
+              </Button>
+               
                 </Grid>
                 </Grid>
                 }
@@ -128,6 +132,7 @@ QueueTable.propTypes = {
     originalData: PropTypes.array.isRequired,
     queueData: PropTypes.array.isRequired,
     filter: PropTypes.string.isRequired,
+    date:PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({

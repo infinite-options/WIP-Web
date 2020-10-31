@@ -50,13 +50,11 @@ class BusinessHours extends React.Component {
     return (
       <div>
         <TableContainer component={Paper}>
-        {/* <ThemeProvider theme={theme}> */}
           <Table
           size="small" aria-label="a dense table"
             style={{
                 backgroundColor: 'white',
               }}
-            // className={styles.businessTableColor}
             >
             <TableHead>
               <TableRow>
@@ -103,7 +101,6 @@ class BusinessHours extends React.Component {
               </TableRow>
             </TableBody>
           </Table>
-        {/* </ThemeProvider> */}
         </TableContainer>
         
       </div>
@@ -115,7 +112,6 @@ class BusinessHours extends React.Component {
     return (
       <div>
         <TableContainer component={Paper}>
-        {/* <ThemeProvider theme={theme}> */}
           <Table
           size="small" aria-label="a dense table"
           >
@@ -134,7 +130,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["Su"][0]}
@@ -155,7 +151,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["Su"][1]}
@@ -179,7 +175,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["M"][0]}
@@ -200,7 +196,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["M"][1]}
@@ -224,7 +220,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["T"][0]}
@@ -245,7 +241,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["T"][1]}
@@ -269,7 +265,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["W"][0]}
@@ -290,7 +286,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["W"][1]}
@@ -314,7 +310,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["Th"][0]}
@@ -335,7 +331,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["Th"][1]}
@@ -359,7 +355,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["F"][0]}
@@ -380,7 +376,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["F"][1]}
@@ -404,7 +400,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["S"][0]}
@@ -425,7 +421,7 @@ class BusinessHours extends React.Component {
                     type='time'
                     InputProps={{
                       inputProps: {
-                        step: 0,
+                        step: 1,
                       },
                     }}
                     value={businessHours["S"][1]}
@@ -444,7 +440,7 @@ class BusinessHours extends React.Component {
               </TableRow>
             </TableBody>
           </Table>
-        {/* </ThemeProvider> */}
+       
         </TableContainer>
         <div className={styles.businessHoursButtonSection}>
           <div className={styles.businessHoursButtonItem}>

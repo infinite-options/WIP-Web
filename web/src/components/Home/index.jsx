@@ -14,6 +14,7 @@ import styles from "./home.module.css";
 
 function Home() {
   return (
+    
     <div className={styles.home}>
       <Grid container className={styles.mainSection}>
         <Grid className={styles.leftPanel} item xs={12} md={4}>

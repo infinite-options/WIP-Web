@@ -50,7 +50,7 @@ class NavBar extends React.Component {
             style = {customStyles}
             onRequestClose={this.toggleModal.bind(this)}
             contentLabel="Add Venue"
-          >
+          > 
             <div> <NewVenue/></div>
           </Modal>
           &nbsp;&nbsp;|

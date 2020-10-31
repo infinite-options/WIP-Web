@@ -31,12 +31,10 @@ import {
 } from "../../constants";
 
 export const selectADate = (venue_uid, selectedDate) => dispatch => {
-  axios
-    .get(API_URL + "venue_info_admin" + "/" + venue_uid + "/" + selectedDate)
-    // .get(API_URL+'venue_info_admin'+ '/' + selected_venue_uid.toString() + '/' + selectedDate.toString())
-    .then(res => {
-      console.log("Got an update");
+ 
+    // console.log("Got an update");
       if (venue_uid !== noLocation) {
+        // console.log(API_URL + "venue_info_admin" + "/" + venue_uid + "/" + selectedDate);
         axios
           .get(
             API_URL +
@@ -82,6 +80,7 @@ export const selectADate = (venue_uid, selectedDate) => dispatch => {
           .then(function(res) {
             let objectString = res.data.result;
             let object = JSON.parse(objectString);
+            // var strFirstFive = object.substring(0,5);
             dispatch({
               type: FETCH_BUSINESS_HOURS,
               payload: object
@@ -108,7 +107,8 @@ export const selectADate = (venue_uid, selectedDate) => dispatch => {
       } else {
         dispatch({
           type: FETCH_CURRENT_QUEUE,
-          payload: []
+          payload: [],
+         
         });
         dispatch({
           type: FETCH_BUSINESS_HOURS,
@@ -127,11 +127,7 @@ export const selectADate = (venue_uid, selectedDate) => dispatch => {
           inQueue: NaN
         });
       }
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
-};
+    };
 
 export const fetchVenues = () => dispatch => {
   axios
