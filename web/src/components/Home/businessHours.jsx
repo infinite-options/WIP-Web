@@ -9,7 +9,7 @@ import {
 } from "../../reducers/actions/venueActions";
 import { noLocation } from "../../constants";
 
-import { Button, Paper, TextField, Typography, ThemeProvider } from "@material-ui/core";
+import { Button, Paper, TextField, Typography, ThemeProvider, InputBase } from "@material-ui/core";
 import { createMuiTheme } from '@material-ui/core/styles';
 import {
   TableContainer,
@@ -50,12 +50,12 @@ class BusinessHours extends React.Component {
     return (
       <div>
         <TableContainer component={Paper}>
-        {/* <ThemeProvider theme={theme}> */}
-          <Table 
+          <Table
+          size="small" aria-label="a dense table"
             style={{
-                height: '0.5rem',
+                backgroundColor: 'white',
               }}
-            className={styles.businessTableColor}>
+            >
             <TableHead>
               <TableRow>
                 <TableCell> Day </TableCell>
@@ -101,7 +101,6 @@ class BusinessHours extends React.Component {
               </TableRow>
             </TableBody>
           </Table>
-        {/* </ThemeProvider> */}
         </TableContainer>
         
       </div>
@@ -113,8 +112,9 @@ class BusinessHours extends React.Component {
     return (
       <div>
         <TableContainer component={Paper}>
-        {/* <ThemeProvider theme={theme}> */}
-          <Table>
+          <Table
+          size="small" aria-label="a dense table"
+          >
             <TableHead>
               <TableRow>
                 <TableCell> Day </TableCell>
@@ -440,7 +440,7 @@ class BusinessHours extends React.Component {
               </TableRow>
             </TableBody>
           </Table>
-        {/* </ThemeProvider> */}
+       
         </TableContainer>
         <div className={styles.businessHoursButtonSection}>
           <div className={styles.businessHoursButtonItem}>

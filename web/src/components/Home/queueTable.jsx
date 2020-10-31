@@ -2,16 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { selectFilterQueue } from '../../reducers/actions/venueActions';
+import { selectFilterQueue, selectADate} from '../../reducers/actions/venueActions';
 import { noLocation, allStatus, waitingStatus, inStoreStatus, exitedStatus } from '../../constants';
+import TextField from '@material-ui/core/TextField';
 
-import { Typography, Table, TableHead, TableRow, TableCell, Select, MenuItem, Grid } from "@material-ui/core";
+import {Button, Typography, TableHead, TableRow, TableCell, Select, MenuItem, Grid, } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import styles from './home.module.css';
 
 class QueueTable extends React.Component {
-
     render() {
         return (
         <div className={styles.currentQueue}>
@@ -25,21 +25,39 @@ class QueueTable extends React.Component {
                 emptyRowsWhenPaging: true,   //to make page size fix in case of less data rows
                 pageSizeOptions:[7,14,21],    // rows selection options
             }}
-            title = "CURRENT QUEUE TABLE"
-            //     title={
-            //     <Grid container direction="row" style={{backgroundColor:'white'}}>
-            //     <Grid item xs={6} md={4}>
-            //         <Typography variant='h6' align='left'>
-            //             CURRENT QUEUE TABLE
-            //         </Typography>
-            //     </Grid>
-            //     <Grid item xs={6} md={6}>
-            //         <Typography variant='h6' align='right'>
-            //             Part 2
-            //         </Typography>
-            //     </Grid>
-            // </Grid>
-            //     }
+            //title = "CURRENT QUEUE TABLE"
+            
+                title={
+                <Grid container direction="row" >
+                <Grid item xs={12} md={6}>
+                    <Typography variant='h6' align='left'>
+                        CURRENT QUEUE TABLE 
+                    
+                    </Typography>
+                <TextField
+                style={{ width: '9rem'}}
+                    type="date"
+                    
+                    onChange = {(event) => {
+                        // console.log(typeof event.target.value);
+                        event.preventDefault();
+                        this.props.selectADate(this.props.venue_uid, event.target.value);
+                    }}
+
+                />
+              <Button
+                variant='contained'
+                color='primary'
+                size = 'small'
+                onClick={() => this.props.selectADate(this.props.venue_uid, null)}
+              >
+                All Tokens
+              </Button>
+               
+                </Grid>
+                </Grid>
+                }
+
                 columns={
                     [
                     { title:'Token #', field: 'token_number',width:'6rem' },
@@ -73,12 +91,6 @@ class QueueTable extends React.Component {
                             <Typography variant="h6" align='left'>
                                 {props.title}
                             </Typography>
-                            {/* <Typography id = 'pqr' variant="h6" align='center'>
-                                "part 1"
-                            </Typography>
-                            <Typography variant="h6" align='right'>
-                                "part 2"
-                            </Typography> */}
                         </div>
                     ),
                     Header: props => (
@@ -115,10 +127,12 @@ class QueueTable extends React.Component {
 };
 
 QueueTable.propTypes = {
+    selectADate: PropTypes.func.isRequired,
     selectFilterQueue: PropTypes.func.isRequired,
     originalData: PropTypes.array.isRequired,
     queueData: PropTypes.array.isRequired,
     filter: PropTypes.string.isRequired,
+    date:PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -128,4 +142,5 @@ const mapStateToProps = state => ({
     queueData: state.venueData.filteredQueue,
 })
 
-export default connect(mapStateToProps, { selectFilterQueue })(QueueTable); 
+export default connect(mapStateToProps, { selectFilterQueue, selectADate })(QueueTable); 
+ 

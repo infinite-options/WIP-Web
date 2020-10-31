@@ -40,6 +40,7 @@ function App(props) {
             />
           </Switch>
         </div>
+        <div style={{backgroundColor:"#e9f3fe", marginTop:'-2vh', height: '10vh'}}/>
       </Router>
     </div>
   );

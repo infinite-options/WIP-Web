@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { selectCategory, selectVenue, selectLocation } from '../../reducers/actions/venueActions';
+import { selectCategory, selectVenue, selectLocation, selectADate } from '../../reducers/actions/venueActions';
 import { noCategory, noLocation, noVenue } from '../../constants';
 
 import { Grid, MenuItem, Select, Box, StylesProvider } from "@material-ui/core";
@@ -54,6 +54,7 @@ class SelectVenue extends React.Component{
                         value={this.props.category}
                         onChange={(event) => {  
                             this.props.selectCategory(event.target.value);
+                            let loc = event.target.value;
                         }}
                     >
                         <MenuItem value={noCategory} > Select a Category </MenuItem>
@@ -114,6 +115,7 @@ class SelectVenue extends React.Component{
 SelectVenue.propTypes = {
     selectCategory: PropTypes.func.isRequired,
     selectVenue: PropTypes.func.isRequired,
+    selectADate: PropTypes.func.isRequired,
     venues: PropTypes.array.isRequired,
     category: PropTypes.string.isRequired,
     venue: PropTypes.string.isRequired,
@@ -127,4 +129,4 @@ const mapStateToProps = state => ({
     location: state.venueData.venue_uid,
 })
 
-export default connect(mapStateToProps, { selectCategory, selectVenue, selectLocation })(SelectVenue);
+export default connect(mapStateToProps, { selectCategory, selectVenue, selectLocation, selectADate })(SelectVenue);
